@@ -9,7 +9,29 @@
         "build",
         "${workspaceFolder}/src/WebSite/webSite.csproj"
       ],
-      "problemMatcher": "$msCompile"
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },    
+    {
+      "taskName": "test",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "test",
+        "${workspaceFolder}/test/DSL_Tests/DSL_Tests.csproj"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/src/WebSite"
+      },
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
     }
+
   ]
 }
