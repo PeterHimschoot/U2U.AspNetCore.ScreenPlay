@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore;
+using U2U.AspNetCore.ScreenPlay;
 
 namespace DSL_Tests
 {
@@ -41,7 +42,14 @@ namespace DSL_Tests
       
       var headers = doc.DocumentNode.Descendants("h1").Where(h => h.InnerText.Contains("Microsoft"));
       Assert.True(headers.Count() >= 1);
-
+    }
+    
+    [Fact]
+    public async Task UserOpensDefaultPage() {
+      
+      var peter = Actor.Named("Peter").CanUse(Web.Browser(server));
+      await new Given(peter).CouldGoToDefaultPage().Successfully();
+      peter.Browser().Should().HaveHeader("Microsoft");
     }
   }
 }
