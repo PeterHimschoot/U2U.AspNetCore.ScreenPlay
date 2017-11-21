@@ -3,15 +3,17 @@ namespace U2U.AspNetCore.ScreenPlay
   using System;
   using System.Net.Http;
   using System.Threading.Tasks;
-  using HtmlAgilityPack;
+  using CsQuery;
+  // using HtmlAgilityPack;
   using Microsoft.AspNetCore.TestHost;
 
-  public class Browser : Ability
+  public class Browser : IAbility
   {
+    string IAbility.Name { get; } = "Browser";
+
     public TestServer Server { get; }
 
     internal Browser(TestServer server)
-    : base("Browser")
     {
       this.Server = server ?? throw new ArgumentNullException(nameof(server));
     }
@@ -23,19 +25,19 @@ namespace U2U.AspNetCore.ScreenPlay
     }
 
     private HttpResponseMessage response;
-    private HtmlDocument dom;
+    private CQ dom;
 
     public async Task SetResponse(HttpResponseMessage response)
     {
       this.response = response;
-
-      this.dom = new HtmlDocument();
-      this.dom.Load(await response.Content.ReadAsStreamAsync());
+      this.dom = CQ.CreateDocument(await response.Content.ReadAsStreamAsync());
     }
-    
-    public HtmlDocument DOM => dom;
+
+    public CQ DOM => dom;
 
     public Questions Should() => new Questions(new DOM(dom));
 
+    public RequestBuilder CreateRequest(string uri)
+    => this.Server.CreateRequest(uri);
   }
 }

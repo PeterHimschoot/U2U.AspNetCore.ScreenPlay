@@ -18,9 +18,9 @@ namespace U2U.AspNetCore.ScreenPlay
       return new Actor(name);
     }
 
-    public List<Ability> Abilities { get; } = new List<Ability>();
+    public List<IAbility> Abilities { get; } = new List<IAbility>();
 
-    public Actor CanUse(Ability use)
+    public Actor CanUse(IAbility use)
     {
       if (this.Abilities.Contains(use))
       {
@@ -32,9 +32,13 @@ namespace U2U.AspNetCore.ScreenPlay
         return this;
       }
     }
-    
+
+    public Actor And() => this;
+
+    public T GetAbility<T>() => this.Abilities.OfType<T>().Single();
+
     public Browser UsesBrowser => this.Abilities.OfType<Browser>().Single();
-    
+
     public Browser Browser() => UsesBrowser;
   }
 }

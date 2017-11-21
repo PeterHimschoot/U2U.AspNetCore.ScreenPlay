@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace U2U.AspNetCore.ScreenPlay
 {
-
+  // Called this TestTask to avoid conflict with System.Threading.Tasks.Task
   public class TestTask
   {
     public TestTask(Actor actor) {
@@ -12,9 +12,10 @@ namespace U2U.AspNetCore.ScreenPlay
     
     public Actor Actor {get;}
     
-    private List<Action> Actions { get; } = new List<Action>();
+    // A task is a collection of actions which get performed
+    private List<IAction> Actions { get; } = new List<IAction>();
     
-    public TestTask AddAction(Action action) {
+    public TestTask AddAction(IAction action) {
       this.Actions.Add(action);
       return this;
     }
@@ -29,6 +30,7 @@ namespace U2U.AspNetCore.ScreenPlay
       await this.PerformAsync();
     }
     
+    public TestTask And() => this;
     
     
   }

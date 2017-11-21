@@ -1,0 +1,16 @@
+﻿@page
+@model CreateToDoItemViewModel
+@{
+    ViewData["Title"] = "Create To Do";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="POST">
+  
+  <label asp-for="@Model.Item.Title"></label>
+  <input asp-for="@Model.Item.Title" type="text">
+  <label asp-for="@Model.Item.Description"></label>
+  <input asp-for="@Model.Item.Description" type="text">
+  <input type="submit" value="Add item">
+  
+</form>
