@@ -22,15 +22,6 @@ namespace U2U.AspNetCore.ScreenPlay
     {
       var client = Server.CreateClient();
       await SetResponse(await client.GetAsync(uri));
-      
-      HttpContent content = new HttpRequestMessage();
-      await client.PostAsync("/", content);
-      
-      var bob = Server.CreateRequest("/");
-      bob.
-      
-      client.PostAsync()
-      
     }
 
     private HttpResponseMessage response;

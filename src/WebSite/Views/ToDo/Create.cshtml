@@ -1,11 +1,10 @@
-﻿@page
-@model CreateToDoItemViewModel
+﻿@model CreateViewModel
 @{
     ViewData["Title"] = "Create To Do";
 }
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="POST">
+<form asp-action="Create" asp-antiforgery="true">
   
   <label asp-for="@Model.Item.Title"></label>
   <input asp-for="@Model.Item.Title" type="text">

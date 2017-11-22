@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,40 +9,42 @@ using Core.Interfaces;
 
 namespace webSite.Pages
 {
-  public class CreateModel : PageModel
+  public class ToDoController : Controller
   {
     private IToDoRepository repository;
 
-    public CreateModel(IToDoRepository repository)
+    public ToDoController(IToDoRepository repository)
     {
       this.repository = repository;
     }
 
-    [BindProperty]
-    public ToDoItem Item { get; set; }
-
-    public void OnGet()
+    [HttpGet("Create")]
+    public ActionResult Create()
     {
-      this.Item = new ToDoItem
+      var item = new ToDoItem
       {
         Title = "TODO",
         Description = "Don't forget to...",
         Completed = false,
         DeadLine = DateTime.Now.AddDays(5)
       };
+      var vm = new CreateViewModel { Item = item };
+      return View(vm);
     }
 
-    public async Task<IActionResult> OnPostAsync()
+    [HttpPost("Create")]
+    public ActionResult Create(CreateViewModel vm)
     {
       if (!ModelState.IsValid)
       {
-        return Page();
+        return View();
       }
+      return new OkResult();
 
-      this.repository.AddToDoItem(this.Item);
-      
-      await this.repository.CommitAsync();
-      return RedirectToPage("/Index");
+      // this.repository.AddToDoItem(this.Item);
+
+      // await this.repository.CommitAsync();
+      // return RedirectToPage("/Index");
     }
   }
 }

@@ -14,6 +14,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Core.Interfaces;
 using Xunit.Abstractions;
 using AngleSharp.Parser.Html;
+using AngleSharp.Dom.Html;
+using Core.Entities;
+using webSite.Pages;
+using webSite;
 
 namespace DSL_Tests
 {
@@ -32,17 +36,8 @@ namespace DSL_Tests
       .UseStartup<TestStartup>()
       .UseContentRoot("/Users/peterhimschoot/Documents/Code/NET_CORE/DSL_Testing/src/WebSite");
 
-      // builder.ConfigureServices((IServiceCollection services) =>
-      // {
-      //   // Replace the normal IToDoRepository with face to have more control over tests
-      //   var descriptor = new ServiceDescriptor(typeof(IToDoRepository), repository);
-      //   services.Replace(descriptor);
-      // });
-
       server = new TestServer(builder);
-
       repository = (FakeToDoRepository)server.Host.Services.GetRequiredService(typeof(IToDoRepository));
-
       client = server.CreateClient();
     }
 
@@ -51,7 +46,6 @@ namespace DSL_Tests
     {
       var response = await client.GetAsync("/");
       Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-      var cwd = Environment.CurrentDirectory;
       var parser = new HtmlParser();
       var document = await parser.ParseAsync(await response.Content.ReadAsStreamAsync());
       var companyHeader = document.QuerySelector("h1#company");
@@ -59,10 +53,42 @@ namespace DSL_Tests
     }
 
     [Fact]
+    public async Task CreateNewItemShouldInsertIntoDatabase()
+    {
+      var createPage = await client.GetAsync("/Create");
+      var model = new CreateViewModel()
+      {
+        Item = new ToDoItem
+        {
+          Title = "Eat cat",
+          Description = "When really hungry",
+          DeadLine = DateTime.Now.AddDays(100)
+        }
+      };
+      var fb = await new FormBuilder()
+                 .Add(x => model.Item.Title)
+                 .Add(x => model.Item.Description)
+                 .CopyCSRFToken(createPage)
+                 ;
+                 
+      var content = fb.Create();
+
+      var response = await client.PostAsync("/Create", content);
+
+      var contents = await response.Content.ReadAsStringAsync();
+
+      Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+    }
+
+    [Fact]
     public async Task UserOpensDefaultPage()
     {
+      // Arrange
       var peter = Actor.Named("Peter").CanUse(Web.Browser(server));
+      // Act
       await new Given(peter).CouldGoToDefaultPage().Successfully();
+      // Assert
       peter.Browser().Should().HaveHeader("Microsoft");
     }
 
@@ -79,7 +105,7 @@ namespace DSL_Tests
       // Arrange
       var peter = Actor.Named("Peter").CanUse(Web.Browser(server)).And().CanUse(this.repository);
       // Act
-      await new Given(peter).HasToDoItems("Make coffee", "Feed the cat").And().CouldGoToItemsPage().Successfully(); 
+      await new Given(peter).HasToDoItems("Make coffee", "Feed the cat").And().CouldGoToItemsPage().Successfully();
       // Assert
       peter.Browser().Should().HaveToDoItems("Make coffee", "Feed the cat");
     }

@@ -16,7 +16,7 @@
       }
     },    
     {
-      "taskName": "test",
+      "label": "DSL Testing",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -27,11 +27,21 @@
         "cwd": "${workspaceFolder}/src/WebSite"
       },
       "problemMatcher": "$msCompile",
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      }
+      "group": "test"
+    },
+    {
+      "label": "ScreenPlay Testing",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "test",
+        "${workspaceFolder}/test/U2U.AspNetCore.ScreenPlay.Tests/U2U.AspNetCore.ScreenPlay.Tests.csproj"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/src/WebSite"
+      },
+      "problemMatcher": "$msCompile",
+      "group": "test"
     }
-
   ]
 }
