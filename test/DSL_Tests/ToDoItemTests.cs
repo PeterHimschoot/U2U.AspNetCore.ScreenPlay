@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using WebSite;
 using System.Net.Http;
-using HtmlAgilityPack;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Net;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Core.Interfaces;
 using Xunit.Abstractions;
+using AngleSharp.Parser.Html;
 
 namespace DSL_Tests
 {
@@ -27,7 +27,7 @@ namespace DSL_Tests
     public ToDoItemsTests(ITestOutputHelper logger)
     {
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-      
+
       var builder = WebHost.CreateDefaultBuilder()
       .UseStartup<TestStartup>()
       .UseContentRoot("/Users/peterhimschoot/Documents/Code/NET_CORE/DSL_Testing/src/WebSite");
@@ -40,9 +40,9 @@ namespace DSL_Tests
       // });
 
       server = new TestServer(builder);
-      
-      repository = (FakeToDoRepository)  server.Host.Services.GetRequiredService(typeof(IToDoRepository));
-      
+
+      repository = (FakeToDoRepository)server.Host.Services.GetRequiredService(typeof(IToDoRepository));
+
       client = server.CreateClient();
     }
 
@@ -50,22 +50,17 @@ namespace DSL_Tests
     public async Task IndexShouldContainMicrosoftHeading()
     {
       var response = await client.GetAsync("/");
-      // Assert.Equal(response.StatusCode, HttpStatusCode.OK);
-
+      Assert.Equal(HttpStatusCode.OK, response.StatusCode);
       var cwd = Environment.CurrentDirectory;
-
-      var html = await response.Content.ReadAsStringAsync();
-      var doc = new HtmlDocument();
-      doc.LoadHtml(html);
-
-      var headers = doc.DocumentNode.Descendants("h1").Where(h => h.InnerText.Contains("Microsoft"));
-      Assert.True(headers.Count() >= 1);
+      var parser = new HtmlParser();
+      var document = await parser.ParseAsync(await response.Content.ReadAsStreamAsync());
+      var companyHeader = document.QuerySelector("h1#company");
+      Assert.Contains("Microsoft", companyHeader.InnerHtml);
     }
 
     [Fact]
     public async Task UserOpensDefaultPage()
     {
-
       var peter = Actor.Named("Peter").CanUse(Web.Browser(server));
       await new Given(peter).CouldGoToDefaultPage().Successfully();
       peter.Browser().Should().HaveHeader("Microsoft");
@@ -81,14 +76,11 @@ namespace DSL_Tests
     [Fact()]
     public async Task AUserShouldSeeOnlyTheirTasks()
     {
+      // Arrange
       var peter = Actor.Named("Peter").CanUse(Web.Browser(server)).And().CanUse(this.repository);
-
-      await new Given(peter)
-      .HasToDoItems("Make coffee", "Feed the cat")
-      .And().CouldGoToItemsPage().Successfully();
-      
-      logger.WriteLine("***Made it here***");
-
+      // Act
+      await new Given(peter).HasToDoItems("Make coffee", "Feed the cat").And().CouldGoToItemsPage().Successfully(); 
+      // Assert
       peter.Browser().Should().HaveToDoItems("Make coffee", "Feed the cat");
     }
   }

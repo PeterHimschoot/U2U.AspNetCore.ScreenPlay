@@ -28,7 +28,7 @@ namespace DSL_Tests
 
     DOM IQuestion.Assert(DOM dom)
     {
-      dom.Should().Contain("ul>li");
+      dom.Should().Contain("ul>li", this.items);
         //  .ContainSingle(Html.Ul, @class: "todolist")
         //  .WithAChild( element => { element.WithContentsIn(this.items); });
       

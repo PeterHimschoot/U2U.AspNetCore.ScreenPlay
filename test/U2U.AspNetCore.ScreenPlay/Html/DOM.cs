@@ -3,14 +3,14 @@ namespace U2U.AspNetCore.ScreenPlay
   using System.Linq;
   using System.Collections.Generic;
   using Xunit;
-  using CsQuery;
+  using AngleSharp.Dom.Html;
 
   public class DOM
   {
 
-    private CQ document;
+    private IHtmlDocument document;
 
-    public DOM(CQ document)
+    public DOM(IHtmlDocument document)
     {
       this.document = document;
     }
@@ -43,9 +43,11 @@ namespace U2U.AspNetCore.ScreenPlay
     //   return nodes.Single().AsElement();
     // }
     
-    public DOM Contain(string query) {
-      var elements = this.document[query];
+    public DOM Contain(string query, string[] items) {
+      var elements = this.document.QuerySelectorAll(query);
       Assert.NotEmpty(elements);
+      var mapped = elements.Select(el => el.InnerHtml).ToList();
+      Assert.Equal(items, mapped);
       return this;
     }
 

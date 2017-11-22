@@ -3,8 +3,8 @@ namespace U2U.AspNetCore.ScreenPlay
   using System;
   using System.Net.Http;
   using System.Threading.Tasks;
-  using CsQuery;
-  // using HtmlAgilityPack;
+  using AngleSharp.Dom.Html;
+  using AngleSharp.Parser.Html;
   using Microsoft.AspNetCore.TestHost;
 
   public class Browser : IAbility
@@ -22,20 +22,32 @@ namespace U2U.AspNetCore.ScreenPlay
     {
       var client = Server.CreateClient();
       await SetResponse(await client.GetAsync(uri));
+      
+      HttpContent content = new HttpRequestMessage();
+      await client.PostAsync("/", content);
+      
+      var bob = Server.CreateRequest("/");
+      bob.
+      
+      client.PostAsync()
+      
     }
 
     private HttpResponseMessage response;
-    private CQ dom;
+    
+    private DOM dom;
 
     public async Task SetResponse(HttpResponseMessage response)
     {
       this.response = response;
-      this.dom = CQ.CreateDocument(await response.Content.ReadAsStreamAsync());
+      var parser = new HtmlParser();
+      var document = await parser.ParseAsync(await response.Content.ReadAsStreamAsync());
+      this.dom = new DOM(document);
     }
 
-    public CQ DOM => dom;
+    public DOM DOM => this.dom;
 
-    public Questions Should() => new Questions(new DOM(dom));
+    public Questions Should() => new Questions(dom);
 
     public RequestBuilder CreateRequest(string uri)
     => this.Server.CreateRequest(uri);
