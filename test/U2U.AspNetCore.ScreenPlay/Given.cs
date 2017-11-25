@@ -1,11 +1,6 @@
 namespace U2U.AspNetCore.ScreenPlay {
   
-  public class Given : TestTask {
-    
-    public Given(Actor actor) : base(actor) {
-      
-    }
+  public static class Given {
+    public static TestTask That(Actor actor) => new TestTask(actor);
   }
-  
-  
 }

@@ -7,10 +7,13 @@ namespace U2U.AspNetCore.ScreenPlay
   using AngleSharp.Dom.Html;
   using AngleSharp.Parser.Html;
   using Microsoft.AspNetCore.TestHost;
+  using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Net.Http.Headers;
 
   public class Browser : IAbility
   {
+    public static Action<IServiceCollection> WithDefaults = s => { };
+
     string IAbility.Name { get; } = "Browser";
 
     public TestServer Server { get; }
@@ -54,7 +57,8 @@ namespace U2U.AspNetCore.ScreenPlay
       this.Response = response;
       UpdateCookies(response, absoluteUrl);
       var parser = new HtmlParser();
-      var document = await parser.ParseAsync(await response.Content.ReadAsStreamAsync());
+      var content = await response.Content.ReadAsStringAsync();
+      var document = await parser.ParseAsync(content);
       verificationToken = VerificationToken.From(document);
       this.dom = new DOM(document);
     }
