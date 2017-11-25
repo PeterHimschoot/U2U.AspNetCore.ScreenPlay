@@ -5,29 +5,28 @@ namespace U2U.AspNetCore.ScreenPlay
 
   public class Questions : IQuestion
   {
-    private DOM dom;
+    private Browser browser;
 
-    public Questions(DOM dom)
+    public Questions(Browser browser)
     {
-      this.dom = dom ?? throw new ArgumentNullException(nameof(dom));
+      this.browser = browser ?? throw new ArgumentNullException(nameof(browser));
     }
 
     private List<IQuestion> questions = new List<IQuestion>();
 
     public Questions Add(IQuestion question)
     {
-      question.Assert(this.dom);
-      // questions.Add(question);
+      question.Assert(this.browser);
       return this;
     }
 
-    DOM IQuestion.Assert(DOM dom)
+    Browser IQuestion.Assert(Browser browser)
     {
       foreach (var question in questions)
       {
-        question.Assert(dom);
+        question.Assert(browser);
       }
-      return dom;
+      return this.browser;
     }
   }
 }

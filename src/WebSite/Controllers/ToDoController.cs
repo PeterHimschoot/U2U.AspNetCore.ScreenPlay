@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Core.Interfaces;
+using Microsoft.Extensions.Logging;
 
-namespace webSite.Pages
+namespace webSite
 {
   public class ToDoController : Controller
   {
     private IToDoRepository repository;
+    private ILogger<ToDoController> logger;
 
-    public ToDoController(IToDoRepository repository)
+    public ToDoController(IToDoRepository repository, ILogger<ToDoController> logger)
     {
       this.repository = repository;
+      this.logger = logger;
     }
 
     [HttpGet("Create")]
@@ -33,18 +36,17 @@ namespace webSite.Pages
     }
 
     [HttpPost("Create")]
-    public ActionResult Create(CreateViewModel vm)
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Create(CreateViewModel vm)
     {
+      logger.LogInformation("Inside Create/POST method");
       if (!ModelState.IsValid)
       {
         return View();
       }
-      return new OkResult();
-
-      // this.repository.AddToDoItem(this.Item);
-
-      // await this.repository.CommitAsync();
-      // return RedirectToPage("/Index");
+      this.repository.AddToDoItem(vm.Item);
+      await this.repository.CommitAsync();
+      return RedirectToPage("/Index");
     }
   }
 }

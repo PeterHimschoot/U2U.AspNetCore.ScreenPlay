@@ -21,12 +21,15 @@ using webSite;
 
 namespace DSL_Tests
 {
+
+  // https://reasoncodeexample.com/2016/08/29/how-to-keep-things-tidy-when-using-asp-net-core-testserver/
+
   public class ToDoItemsTests
   {
     private ITestOutputHelper logger;
     private TestServer server;
     private HttpClient client;
-    private FakeToDoRepository repository;
+    public FakeToDoRepository Repository {get;}
 
     public ToDoItemsTests(ITestOutputHelper logger)
     {
@@ -37,8 +40,11 @@ namespace DSL_Tests
       .UseContentRoot("/Users/peterhimschoot/Documents/Code/NET_CORE/DSL_Testing/src/WebSite");
 
       server = new TestServer(builder);
-      repository = (FakeToDoRepository)server.Host.Services.GetRequiredService(typeof(IToDoRepository));
+      Repository = (FakeToDoRepository)server.Host.Services.GetRequiredService(typeof(IToDoRepository));
       client = server.CreateClient();
+
+      // client = new HttpClient();
+      // client.BaseAddress = new Uri("http://localhost:5000/");
     }
 
     [Fact]
@@ -52,7 +58,7 @@ namespace DSL_Tests
       Assert.Contains("Microsoft", companyHeader.InnerHtml);
     }
 
-    [Fact]
+    [Fact(Skip = "Obsolete")]
     public async Task CreateNewItemShouldInsertIntoDatabase()
     {
       var createPage = await client.GetAsync("/Create");
@@ -70,15 +76,31 @@ namespace DSL_Tests
                  .Add(x => model.Item.Description)
                  .CopyCSRFToken(createPage)
                  ;
-                 
+
       var content = fb.Create();
-
       var response = await client.PostAsync("/Create", content);
-
       var contents = await response.Content.ReadAsStringAsync();
-
       Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
+    }
+
+    [Fact]
+    public async Task CreateNewItemShouldInsertIntoDatabaseToo()
+    {
+      var model = new CreateViewModel()
+      {
+        Item = new ToDoItem
+        {
+          Title = "Eat cat",
+          Description = "When really hungry",
+          DeadLine = DateTime.Now.AddDays(100)
+        }
+      };
+      var peter = Actor.Named("Peter").CanUse(Web.Browser(server)).And().CanUse(Repository);
+      await new Given(peter).CouldGoToItemsCreate().And()
+                      .EnterNewToDo(model).Successfully();
+                      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
+                      .And().AddedToDoItem(model.Item, Repository);
     }
 
     [Fact]
@@ -103,7 +125,7 @@ namespace DSL_Tests
     public async Task AUserShouldSeeOnlyTheirTasks()
     {
       // Arrange
-      var peter = Actor.Named("Peter").CanUse(Web.Browser(server)).And().CanUse(this.repository);
+      var peter = Actor.Named("Peter").CanUse(Web.Browser(server)).And().CanUse(Repository);
       // Act
       await new Given(peter).HasToDoItems("Make coffee", "Feed the cat").And().CouldGoToItemsPage().Successfully();
       // Assert

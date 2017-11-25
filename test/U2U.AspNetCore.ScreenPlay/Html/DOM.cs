@@ -43,7 +43,7 @@ namespace U2U.AspNetCore.ScreenPlay
     //   return nodes.Single().AsElement();
     // }
     
-    public DOM Contain(string query, string[] items) {
+    public DOM Contain(string query, params string[] items) {
       var elements = this.document.QuerySelectorAll(query);
       Assert.NotEmpty(elements);
       var mapped = elements.Select(el => el.InnerHtml).ToList();

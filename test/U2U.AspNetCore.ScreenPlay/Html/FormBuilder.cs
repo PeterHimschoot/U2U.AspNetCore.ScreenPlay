@@ -67,6 +67,7 @@ namespace U2U.AspNetCore.ScreenPlay
     public FormUrlEncodedContent Create()
     {
       var form = new FormUrlEncodedContent(variables);
+      
       form.Headers.Add("Set-Cookie", verificationCookie);
       form.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
       return form;

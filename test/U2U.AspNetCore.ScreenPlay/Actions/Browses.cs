@@ -1,7 +1,6 @@
 
 namespace U2U.AspNetCore.ScreenPlay
 {
-
   using System.Threading.Tasks;
 
   public sealed class Browses : IAction
