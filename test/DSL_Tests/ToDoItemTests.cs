@@ -21,6 +21,7 @@ using Core.Entities;
 using webSite.Pages;
 using webSite;
 using System.Net.Http.Headers;
+using System.IO;
 
 namespace DSL_Tests
 {
@@ -38,7 +39,11 @@ namespace DSL_Tests
     {
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-      Web.ContentRoot = "/Users/peterhimschoot/Documents/Code/NET_CORE/DSL_Testing/src/WebSite";
+      logger.WriteLine($"Current dir = {Environment.CurrentDirectory}");
+      string projectRoot = Path.Combine(Environment.CurrentDirectory, "../../../../..");
+      logger.WriteLine($"Project root = {projectRoot}");
+      Web.ContentRoot = Path.Combine(projectRoot, "src/WebSite");
+      logger.WriteLine($"Web.ContentRoot = {Web.ContentRoot}");
 
       Web.Configuration = (hostingContext, config) =>
       {
