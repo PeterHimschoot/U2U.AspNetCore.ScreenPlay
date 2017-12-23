@@ -2,11 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\..\..\CleanArchitecture\NET_CORE_CleanArchitecture\src\U2U.CleanArchitecture\U2U.CleanArchitecture.csproj" />
+    <!-- <ProjectReference Include="..\..\..\CleanArchitecture\NET_CORE_CleanArchitecture\src\U2U.CleanArchitecture\U2U.CleanArchitecture.csproj" /> -->
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
+    <PackageReference Include="U2U.CleanArchitecture" Version="2.0.0-alfa001" />
   </ItemGroup>
 
   <PropertyGroup>
