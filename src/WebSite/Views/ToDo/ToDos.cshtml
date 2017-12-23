@@ -1,0 +1,11 @@
+﻿@model ToDosViewModel
+@{
+    ViewData["Title"] = "ToDo List";
+}
+<!-- <h2>@ViewData["Title"]</h2> -->
+<ul id="todolis">
+  @foreach(var item in Model.ToDoItems) {
+    <li>@item.Title</li>
+  }
+</ul> 
+

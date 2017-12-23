@@ -1,9 +1,8 @@
 
-namespace DSL_Tests
+namespace U2U.AspNetCore.ScreenPlay
 {
   using System;
   using System.Net;
-  using U2U.AspNetCore.ScreenPlay;
   using Xunit;
 
   public class ShouldHaveStatusCode : IQuestion

@@ -45,7 +45,7 @@ namespace U2U.AspNetCore.ScreenPlay
     
     public DOM Contain(string query, params string[] items) {
       var elements = this.document.QuerySelectorAll(query);
-      Assert.NotEmpty(elements);
+      Assert.True(elements.Any(), userMessage: $"Could not find {query}");
       var mapped = elements.Select(el => el.InnerHtml).ToList();
       Assert.Equal(items, mapped);
       return this;

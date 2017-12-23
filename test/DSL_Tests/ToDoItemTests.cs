@@ -20,6 +20,7 @@ using AngleSharp.Dom.Html;
 using Core.Entities;
 using webSite.Pages;
 using webSite;
+using System.Net.Http.Headers;
 
 namespace DSL_Tests
 {
@@ -118,11 +119,12 @@ namespace DSL_Tests
           DeadLine = DateTime.Now.AddDays(100)
         }
       };
-      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>()).And().CanUse<IToDoRepository>();
+      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>())
+                       .And().CanUse<IToDoRepository>();
       await Given.That(peter).CouldGoToItemsCreate().And()
                       .EnterNewToDo(model).Successfully();
       peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
-      .And().AddedToDoItem(model.Item, peter.Ability<IToDoRepository>());
+           .And().AddedToDoItem(model.Item, peter.Ability<IToDoRepository>());
     }
 
     [Fact]
@@ -134,15 +136,18 @@ namespace DSL_Tests
       await Given.That(peter).CouldGoToDefaultPage().Successfully();
       // Assert
       peter.Browser().Should().HaveHeader("Microsoft");
+      peter.Browser().Should().HaveContentType("text/html; charset=utf-8");
     }
 
     [Fact()]
     public async Task AUserShouldSeeOnlyTheirTasks()
     {
       // Arrange
-      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>()).And().CanUse<IToDoRepository>();
+      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>())
+                       .And().CanUse<IToDoRepository>();
       // Act
-      await Given.That(peter).HasToDoItems("Make coffee", "Feed the cat").And().CouldGoToItemsPage().Successfully();
+      await Given.That(peter).HasToDoItems("Make coffee", "Feed the cat")
+                 .And().CouldGoToItemsPage().Successfully();
       // Assert
       peter.Browser().Should().HaveToDoItems("Make coffee", "Feed the cat");
     }

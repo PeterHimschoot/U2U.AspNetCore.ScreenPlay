@@ -1,5 +1,6 @@
 namespace DSL_Tests
 {
+  using U2U.AspNetCore.ScreenPlay;
   using Core.Interfaces;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
@@ -13,12 +14,7 @@ namespace DSL_Tests
     public override void ConfigureServices(IServiceCollection services)
     {
       base.ConfigureServices(services);
-      ReplaceWithFakeServices(services);
-    }
-    
-    private void ReplaceWithFakeServices(IServiceCollection services) {
-      var descriptor = new ServiceDescriptor(typeof(IToDoRepository), typeof(FakeToDoRepository), ServiceLifetime.Singleton);
-      services.Replace(descriptor);
+      services.ReplaceSingleton<IToDoRepository, FakeToDoRepository>();
     }
   }
 }

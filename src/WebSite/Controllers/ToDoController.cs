@@ -20,6 +20,14 @@ namespace webSite
       this.repository = repository;
       this.logger = logger;
     }
+    
+    [HttpGet("todos")]
+    public ActionResult ToDos() {
+      var vm = new ToDosViewModel {
+        ToDoItems = repository.ToDos.ToList()
+      };
+      return View(vm);
+    }
 
     [HttpGet("Create")]
     public ActionResult Create()
