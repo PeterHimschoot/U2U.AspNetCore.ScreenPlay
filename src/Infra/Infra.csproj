@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
-    <PackageReference Include="U2U.CleanArchitecture" Version="2.0.0-alfa001" />
+    <PackageReference Include="U2U.AspNetCore.CleanArchitecture" Version="2.0.0-alpha" />
   </ItemGroup>
 
   <PropertyGroup>
