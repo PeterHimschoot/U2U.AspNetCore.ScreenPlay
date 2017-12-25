@@ -1,0 +1,30 @@
+@model WebSite.ViewModels.ToDo.EditViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>EditViewModel</h4>
+<hr />
+<div class="row">
+  <div class="col-md-4">
+    <form asp-action="Edit" asp-anti-forgery="true">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <input asp-for="@Model.Item" type="hidden" />
+      <label asp-for="@Model.Item.Title"></label>
+      <input asp-for="@Model.Item.Title" type="text">
+      <label asp-for="@Model.Item.Description"></label>
+      <input asp-for="@Model.Item.Description" type="text">
+      <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-default" />
+      </div>
+    </form>
+  </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

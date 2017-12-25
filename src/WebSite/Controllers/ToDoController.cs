@@ -1,15 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Core.Entities;
-using Microsoft.AspNetCore.Mvc;
-using Core.Interfaces;
-using Microsoft.Extensions.Logging;
-
-namespace webSite
+namespace WebSite
 {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Threading.Tasks;
+  using Microsoft.AspNetCore.Mvc.RazorPages;
+  using Core.Entities;
+  using Microsoft.AspNetCore.Mvc;
+  using Core.Interfaces;
+  using Microsoft.Extensions.Logging;
+  using WebSite.ViewModels.ToDo;
+
   public class ToDoController : Controller
   {
     private IToDoRepository repository;
@@ -20,10 +21,13 @@ namespace webSite
       this.repository = repository;
       this.logger = logger;
     }
-    
+
     [HttpGet("todos")]
-    public ActionResult ToDos() {
-      var vm = new ToDosViewModel {
+
+    public ActionResult ToDos()
+    {
+      var vm = new ToDosViewModel
+      {
         ToDoItems = repository.ToDos.ToList()
       };
       return View(vm);
