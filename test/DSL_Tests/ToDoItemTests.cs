@@ -44,7 +44,8 @@ namespace DSL_Tests
       logger.WriteLine($"Project root = {projectRoot}");
       Web.ContentRoot = Path.Combine(projectRoot, "src/WebSite");
       logger.WriteLine($"Web.ContentRoot = {Web.ContentRoot}");
-
+      
+      // Web.ContentRoot = "http://localhost:5000";
       Web.Configuration = (hostingContext, config) =>
       {
         var env = hostingContext.HostingEnvironment;
@@ -140,8 +141,9 @@ namespace DSL_Tests
       // Act
       await Given.That(peter).CouldGoToDefaultPage().Successfully();
       // Assert
-      peter.Browser().Should().HaveHeader("Microsoft");
-      peter.Browser().Should().HaveContentType("text/html; charset=utf-8");
+      peter.Browser().Should().HaveHtmlHeader("Microsoft")
+           .And().Should().HaveContentType("text/html; charset=utf-8");
+          //  .And().Should().HaveHeader("Cache-Control", "no-cache, no-store");
     }
 
     [Fact()]

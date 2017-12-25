@@ -3,6 +3,7 @@ namespace DSL_Tests
 {
   using System.Threading.Tasks;
   using Core.Entities;
+  using Core.Interfaces;
   using U2U.AspNetCore.ScreenPlay;
 
   public class AddInitialToDoItem : IAction
@@ -16,7 +17,7 @@ namespace DSL_Tests
 
     async Task IAction.PerformAsAsync(Actor actor)
     {
-      FakeToDoRepository repo = actor.GetAbility<FakeToDoRepository>();
+      IToDoRepository repo = actor.GetAbility<IToDoRepository>();
       repo.AddToDoItem(new ToDoItem { Title = this.title });
       await repo.CommitAsync();
     }

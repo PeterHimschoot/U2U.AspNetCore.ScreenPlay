@@ -5,11 +5,11 @@ namespace DSL_Tests
   using U2U.AspNetCore.ScreenPlay;
   using Xunit;
 
-  public class ShouldHaveHeader : IQuestion
+  public class ShouldHaveHtmlHeader : IQuestion
   {
     private string header;
 
-    public ShouldHaveHeader(string header)
+    public ShouldHaveHtmlHeader(string header)
     {
       this.header = header ?? throw new ArgumentNullException(nameof(header));
     }

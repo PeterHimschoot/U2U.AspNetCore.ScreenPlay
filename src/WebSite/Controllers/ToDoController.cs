@@ -10,15 +10,19 @@ namespace WebSite
   using Core.Interfaces;
   using Microsoft.Extensions.Logging;
   using WebSite.ViewModels.ToDo;
+  using Microsoft.EntityFrameworkCore;
+  using global::AutoMapper;
 
   public class ToDoController : Controller
   {
     private IToDoRepository repository;
     private ILogger<ToDoController> logger;
+    private IMapper mapper;
 
-    public ToDoController(IToDoRepository repository, ILogger<ToDoController> logger)
+    public ToDoController(IToDoRepository repository, IMapper mapper, ILogger<ToDoController> logger)
     {
-      this.repository = repository;
+      this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+      this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
       this.logger = logger;
     }
 
@@ -58,7 +62,25 @@ namespace WebSite
       }
       this.repository.AddToDoItem(vm.Item);
       await this.repository.CommitAsync();
-      return RedirectToPage("/Index");
+      return RedirectToPage(nameof(ToDoController.ToDos));
+    }
+    
+    [HttpGet("Edit/{id:int:min(0)}")]
+    public async Task<ActionResult> Edit(int id) {
+      var toDoItem = await this.repository.ToDos.SingleAsync(todo => todo.Id == id);
+      var vm = mapper.Map<EditViewModel>(toDoItem);
+      return View(vm);
+    }
+    
+    [HttpPost("Edit/{id:int:min(0)}")]
+    public async Task<ActionResult> Edit(int id, EditViewModel viewModel) {
+      if( !ModelState.IsValid) {
+        return View();
+      }
+      var toDoItem = mapper.Map<ToDoItem>(viewModel);
+      this.repository.ChangeToDoItem(toDoItem);
+      await this.repository.CommitAsync();
+      return RedirectToAction(nameof(ToDoController.ToDos));
     }
   }
 }
