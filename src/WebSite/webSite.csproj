@@ -17,7 +17,8 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Infra\Infra.csproj" />
+    <ProjectReference Include="../Core/Core.csproj" />
+    <ProjectReference Include="../Infra/Infra.csproj" />
+    <ProjectReference Include="../../test/U2U.AspNetCore.ScreenPlay.Identity/U2U.AspNetCore.ScreenPlay.Identity.csproj" />
   </ItemGroup>
 </Project>

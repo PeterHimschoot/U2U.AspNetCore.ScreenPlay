@@ -21,8 +21,7 @@ namespace U2U.AspNetCore.ScreenPlay
       ContentRoot = Path.Combine(Directory.GetCurrentDirectory(), "../../src/WebApp");
     }
 
-
-    public static IAbility Browser<S>(Action<IServiceCollection> configureServices) where S : class
+    public static Browser Browser<S>(Action<IServiceCollection> configureServices) where S : class
     {
       try
       {
@@ -63,7 +62,7 @@ namespace U2U.AspNetCore.ScreenPlay
       }
     }
 
-    public static IAbility Browser<S>() where S : class
+    public static Browser Browser<S>() where S : class
     {
       try
       {

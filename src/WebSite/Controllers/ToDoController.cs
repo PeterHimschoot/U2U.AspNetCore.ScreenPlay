@@ -62,7 +62,7 @@ namespace WebSite
       }
       this.repository.AddToDoItem(vm.Item);
       await this.repository.CommitAsync();
-      return RedirectToPage(nameof(ToDoController.ToDos));
+      return RedirectToAction(nameof(ToDoController.ToDos));
     }
     
     [HttpGet("Edit/{id:int:min(0)}")]

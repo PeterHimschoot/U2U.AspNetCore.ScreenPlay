@@ -1,6 +1,7 @@
 
 namespace U2U.AspNetCore.ScreenPlay
 {
+  using System;
   using System.Threading.Tasks;
 
   public sealed class Browses : IAction
@@ -14,7 +15,11 @@ namespace U2U.AspNetCore.ScreenPlay
 
     public async Task PerformAsAsync(Actor actor)
     {
-      await actor.UsesBrowser.ToOpenPageAsync(this.Uri);
+      if( actor.HasBrowser ) {
+        await actor.UsesBrowser.ToOpenPageAsync(this.Uri);
+      } else {
+        throw new Exception(message: "This actor does not have a browser ability.");
+      }
     }
   }
 }

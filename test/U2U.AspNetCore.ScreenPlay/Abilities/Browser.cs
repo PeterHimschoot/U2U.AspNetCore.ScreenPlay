@@ -1,6 +1,7 @@
 namespace U2U.AspNetCore.ScreenPlay
 {
   using System;
+  using System.Collections.Generic;
   using System.Net;
   using System.Net.Http;
   using System.Threading.Tasks;
@@ -22,18 +23,36 @@ namespace U2U.AspNetCore.ScreenPlay
     {
       this.Server = server ?? throw new ArgumentNullException(nameof(server));
     }
+    
+    private readonly List<Action<RequestBuilder, Uri>> extensions =  new List<Action<RequestBuilder, Uri>>();
+    
+    public IAbility And() => this;
+    
+    public void AddRequestExtension( Action<RequestBuilder, Uri> extension) {
+      extensions.Add(extension);
+    }
+    
+    private void RunExtensions(RequestBuilder requestBuilder, Uri absoluteUri) {
+      extensions.ForEach(extension => extension(requestBuilder, absoluteUri));
+    }
 
     public async Task ToOpenPageAsync(string uri)
     {
       var client = Server.CreateClient();
-      var absoluteUrl = new Uri(this.Server.BaseAddress, uri);
-      await SetResponse(await client.GetAsync(uri), absoluteUrl);
+      var fullUri = new Uri(this.Server.BaseAddress, uri);
+      var absoluteUri = fullUri.AbsoluteUri;
+      var requestBuilder = this.Server.CreateRequest(absoluteUri);
+      RunExtensions(requestBuilder, fullUri);
+      var response = await requestBuilder.GetAsync();
+      await SetResponse(response, fullUri);
+      // await SetResponse(await client.GetAsync(absoluteUrl), absoluteUrl);
     }
 
     public async Task PostToControllerAsync(string uri, FormValues form)
     {
       var absoluteUrl = new Uri(this.Server.BaseAddress, uri);
       var requestBuilder = this.Server.CreateRequest(absoluteUrl.ToString());
+      RunExtensions(requestBuilder, absoluteUrl);
       AddCookies(requestBuilder, absoluteUrl);
       SetXSRFHeader(requestBuilder, absoluteUrl);
       form.Add(VerificationToken.Name, this.verificationToken.Token);

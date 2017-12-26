@@ -1,7 +1,7 @@
 namespace DSL_Tests
 {
   using U2U.AspNetCore.ScreenPlay;
-  using webSite;
+  using WebSite.ViewModels.ToDo;
 
   public static class TestTaskExtensions
   {

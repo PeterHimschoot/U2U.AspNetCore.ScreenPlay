@@ -1,9 +1,9 @@
 ﻿namespace U2U.AspNetCore.ScreenPlay
 {
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using Microsoft.Extensions.DependencyInjection;
 
   public class Actor
   {
@@ -33,20 +33,24 @@ using Microsoft.Extensions.DependencyInjection;
         return this;
       }
     }
-    
-    public Actor CanUse<T>() {
-      IAbility ability = (IAbility) this.Ability<T>(); 
+
+    public Actor CanUse<T>()
+    {
+      IAbility ability = (IAbility)this.Ability<T>();
       return CanUse(ability);
     }
 
     public Actor And() => this;
 
-    public T GetAbility<T>() => this.Abilities.OfType<T>().Single();
+    public T GetAbility<T>() => this.Abilities.OfType<T>().SingleOrDefault();
+
+    public bool HasBrowser
+    => this.Abilities.OfType<Browser>().Any();
 
     public Browser UsesBrowser => this.Abilities.OfType<Browser>().Single();
 
     public Browser Browser() => UsesBrowser;
-    
-    public T Ability<T>() => this.Browser().Server.Host.Services.GetService<T>(); 
+
+    public T Ability<T>() => this.Browser().Server.Host.Services.GetService<T>();
   }
 }

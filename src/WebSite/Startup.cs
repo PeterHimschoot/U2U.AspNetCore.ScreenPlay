@@ -12,15 +12,13 @@ namespace WebSite
   using U2U.CleanArchitecture;
   using global::AutoMapper;
   using WebSite.AutoMapper;
+  using U2U.AspNetCore.ScreenPlay;
 
   public class Startup
   {
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
-      
-      // Mapper.Initialize(config => config.AddProfile(new MappingProfile()));
-      
     }
 
     public IConfiguration Configuration { get; }
@@ -28,7 +26,13 @@ namespace WebSite
     public virtual void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc(options => { });
-      services.AddAutoMapper();
+      // services.AddAutoMapper();
+      
+      services.AddSingleton<IMapper>(
+        new Mapper( new MapperConfiguration( cfg 
+        => cfg.AddProfile(new MappingProfile())))
+      );
+      
       var autoConfigOptions = new AutoConfigOptions();
       Configuration.Bind("AutoConfig", autoConfigOptions);
       services.AddAutoConfig(autoConfigOptions, key => Configuration.GetConnectionString(key));
@@ -38,6 +42,7 @@ namespace WebSite
     {
       if (env.IsDevelopment())
       {
+        app.UseFakeClaims();
         app.UseDeveloperExceptionPage();
       }
       else

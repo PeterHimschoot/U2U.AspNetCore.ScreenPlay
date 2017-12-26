@@ -18,10 +18,11 @@ using Xunit.Abstractions;
 using AngleSharp.Parser.Html;
 using AngleSharp.Dom.Html;
 using Core.Entities;
-using webSite.Pages;
-using webSite;
 using System.Net.Http.Headers;
 using System.IO;
+using WebSite.ViewModels.ToDo;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace DSL_Tests
 {
@@ -113,7 +114,7 @@ namespace DSL_Tests
     //   Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     // }
 
-    [Fact]
+    [Fact()]
     public async Task CreateNewItemShouldInsertIntoDatabaseToo()
     {
       var model = new CreateViewModel()
@@ -125,8 +126,13 @@ namespace DSL_Tests
           DeadLine = DateTime.Now.AddDays(100)
         }
       };
-      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>())
-                       .And().CanUse<IToDoRepository>();
+      var fakeClaims = new List<Claim> {
+        
+      };
+      var browser = Web.Browser<TestStartup>()
+                       .WithFakeClaims(fakeClaims);
+      var peter = Actor.Named("Peter").CanUse(browser)
+                       .And().CanUse<FakeToDoRepository>();
       await Given.That(peter).CouldGoToItemsCreate().And()
                       .EnterNewToDo(model).Successfully();
       peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
@@ -137,7 +143,7 @@ namespace DSL_Tests
     public async Task UserOpensDefaultPage()
     {
       // Arrange
-      var peter = Actor.Named("Peter").CanUse(Web.Browser<Startup>());
+      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>());
       // Act
       await Given.That(peter).CouldGoToDefaultPage().Successfully();
       // Assert

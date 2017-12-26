@@ -16,8 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WebSite\webSite.csproj" />
+    <ProjectReference Include="..\..\src\WebSite\WebSite.csproj" />
     <ProjectReference Include="..\U2U.AspNetCore.ScreenPlay\U2U.AspNetCore.ScreenPlay.csproj" />
+    <ProjectReference Include="..\U2U.AspNetCore.ScreenPlay.Identity\U2U.AspNetCore.ScreenPlay.Identity.csproj" />
   </ItemGroup>
   
   <!-- FROM: https://github.com/aspnet/Razor/issues/1212 -->
