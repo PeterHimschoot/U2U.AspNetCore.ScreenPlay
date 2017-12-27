@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\U2U.AspNetCore.ScreenPlay\U2U.AspNetCore.ScreenPlay.csproj" />
+    <ProjectReference Include="..\U2U.AspNetCore.ScreenPlay.Identity\U2U.AspNetCore.ScreenPlay.Identity.csproj" />
   </ItemGroup>
 
 </Project>

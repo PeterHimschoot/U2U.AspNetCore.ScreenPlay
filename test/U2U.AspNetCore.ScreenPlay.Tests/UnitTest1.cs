@@ -3,6 +3,7 @@ namespace U2U.AspNetCore.ScreenPlay.Tests
   using System;
   using Xunit;
   using U2U.AspNetCore.ScreenPlay;
+  
   public class UnitTest1
   {
     class DeepHelper

@@ -3,6 +3,7 @@ namespace U2U.AspNetCore.ScreenPlay {
   using System.Collections.Generic;
   using System.Net;
   using System.Security.Claims;
+  using Microsoft.AspNetCore.Authentication;
   using Microsoft.AspNetCore.Identity;
   using Microsoft.Net.Http.Headers;
 
