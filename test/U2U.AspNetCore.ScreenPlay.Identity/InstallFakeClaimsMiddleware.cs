@@ -20,8 +20,9 @@ namespace U2U.AspNetCore.ScreenPlay.Identity
       this.next = next ?? throw new ArgumentNullException(nameof(next));
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
       this.options = options?.Value ?? throw new ArgumentNullException(nameof(options));
-      
-      if( !this.options.SkipEnvironmentCheck && !hostingEnv.IsDevelopment()) {
+
+      if (!this.options.SkipEnvironmentCheck && !hostingEnv.IsDevelopment())
+      {
         throw new Exception("This middleware is for development only");
       }
     }
@@ -30,13 +31,17 @@ namespace U2U.AspNetCore.ScreenPlay.Identity
     {
       // Does the request contain the cookie with fake claims?
       var cookies = context.Request.Cookies;
-      if(cookies.ContainsKey(this.options.CookieName)) {
+      if (cookies.ContainsKey(this.options.CookieName))
+      {
         string value = default(string);
         cookies.TryGetValue(this.options.CookieName, out value);
-        
-        ClaimsPrincipal user = context.User;
-        ClaimsIdentity identity = user.Identity as ClaimsIdentity;
-        identity.AddClaim(new Claim(type: ClaimTypes.Country, value: "Belgium"));
+        var ser = new ClaimsSerializer();
+        var ticket = ser.DeserializeTicket(value);
+        context.User = ticket.Principal;
+
+        // ClaimsPrincipal user = context.User;
+        // ClaimsIdentity identity = user.Identity as ClaimsIdentity;
+        // identity.AddClaim(new Claim(type: ClaimTypes.Country, value: "Belgium"));
       }
       await this.next.Invoke(context);
     }

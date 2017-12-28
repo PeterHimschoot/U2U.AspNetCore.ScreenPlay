@@ -1,6 +1,7 @@
 namespace WebSite
 {
   using System.Collections.Generic;
+  using Microsoft.AspNetCore.Authorization;
   using Microsoft.AspNetCore.Mvc;
   using WebSite.ViewModels.Claims;
   
@@ -8,6 +9,7 @@ namespace WebSite
   {
     [Route("")]
     [HttpGet("claims")]
+    [Authorize(Policy = "CanListClaims")]
     public ActionResult ShowClaims()
     {
       var vm = new ShowViewModel();

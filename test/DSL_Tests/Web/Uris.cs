@@ -4,5 +4,6 @@ namespace DSL_Tests {
     public const string Home = "/ToDos";
     public const string Items = "/ToDos";
     public const string Create = "/Create";
+    public const string Claims = "/Claims";
   }
 }

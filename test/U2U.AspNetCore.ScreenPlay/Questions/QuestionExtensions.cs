@@ -10,7 +10,7 @@ namespace U2U.AspNetCore.ScreenPlay
   {
     public static Questions And(this Questions questions)
     => questions;
-    
+
     public static Questions Should(this Questions questions)
     => questions;
 
@@ -19,15 +19,17 @@ namespace U2U.AspNetCore.ScreenPlay
 
     public static Questions HaveContentType(this Questions q, MediaTypeHeaderValue contentType)
     => q.Add(new ShouldHaveContentType(contentType));
-    
+
     public static Questions HaveContentType(this Questions q, string contentType)
     => q.Add(new ShouldHaveContentType(contentType));
-    
-    public static Questions HaveHeader(this Questions questions, string headerKey, Func<IEnumerable<string>, bool>  predicate)
+
+    public static Questions HaveHeader(this Questions questions, string headerKey, Func<IEnumerable<string>, bool> predicate)
       => questions.Add(new ShouldHaveHeader(headerKey, predicate));
-      
+
     public static Questions HaveHeader(this Questions questions, string headerKey, string withValue)
       => questions.Add(new ShouldHaveHeader(headerKey, withValue));
-      
+
+    public static Questions HaveContentsWith(this Questions questions, string path, params string[] items)
+    => questions.Add(new ShouldHaveContentsWith(path, items));
   }
 }

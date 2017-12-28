@@ -45,7 +45,7 @@ namespace DSL_Tests
       logger.WriteLine($"Project root = {projectRoot}");
       Web.ContentRoot = Path.Combine(projectRoot, "src/WebSite");
       logger.WriteLine($"Web.ContentRoot = {Web.ContentRoot}");
-      
+
       // Web.ContentRoot = "http://localhost:5000";
       Web.Configuration = (hostingContext, config) =>
       {
@@ -126,11 +126,7 @@ namespace DSL_Tests
           DeadLine = DateTime.Now.AddDays(100)
         }
       };
-      var fakeClaims = new List<Claim> {
-        
-      };
-      var browser = Web.Browser<TestStartup>()
-                       .WithFakeClaims(fakeClaims);
+      var browser = Web.Browser<TestStartup>();
       var peter = Actor.Named("Peter").CanUse(browser)
                        .And().CanUse<FakeToDoRepository>();
       await Given.That(peter).CouldGoToItemsCreate().And()
@@ -149,7 +145,7 @@ namespace DSL_Tests
       // Assert
       peter.Browser().Should().HaveHtmlHeader("Microsoft")
            .And().Should().HaveContentType("text/html; charset=utf-8");
-          //  .And().Should().HaveHeader("Cache-Control", "no-cache, no-store");
+      //  .And().Should().HaveHeader("Cache-Control", "no-cache, no-store");
     }
 
     [Fact()]

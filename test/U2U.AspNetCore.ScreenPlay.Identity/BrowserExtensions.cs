@@ -1,4 +1,5 @@
-namespace U2U.AspNetCore.ScreenPlay {
+namespace U2U.AspNetCore.ScreenPlay
+{
   using System;
   using System.Collections.Generic;
   using System.Net;
@@ -6,24 +7,32 @@ namespace U2U.AspNetCore.ScreenPlay {
   using Microsoft.AspNetCore.Authentication;
   using Microsoft.AspNetCore.Identity;
   using Microsoft.Net.Http.Headers;
+  using U2U.AspNetCore.ScreenPlay.Identity;
 
-  public static class BrowserExtensions {
-    
-    public static Browser WithFakeClaims(this Browser browser, IEnumerable<Claim> claims ) {
-      browser.AddRequestExtension( (requestBuilder, absoluteUri) => 
-        {
-          try {
-          var cookieContainer = new CookieContainer();
-          var cookieValue = "testing";
-          var cookie = new Cookie("FakeClaims", cookieValue, "/", absoluteUri.Authority);
-          cookieContainer.Add(cookie);
-          var cookieHeader = cookieContainer.GetCookieHeader(absoluteUri);
-          requestBuilder.AddHeader(HeaderNames.Cookie, cookieHeader);
-          } catch(Exception ex) {
-            string message = ex.Message;
-          }
-        });
-        return browser;
+  public static class BrowserExtensions
+  {
+
+    public static Browser WithFakeClaimsPrincipal(this Browser browser, ClaimsPrincipal principal)
+    {
+      browser.AddRequestExtension((requestBuilder, absoluteUri) =>
+       {
+         try
+         {
+           var ticket = new AuthenticationTicket(principal, "FakeClaims");
+           var ser = new ClaimsSerializer();
+           var cookieValue = ser.SerializeTicket(ticket);
+           var cookieContainer = new CookieContainer();
+           var cookie = new Cookie("FakeClaims", cookieValue, "/", absoluteUri.Authority);
+           cookieContainer.Add(cookie);
+           var cookieHeader = cookieContainer.GetCookieHeader(absoluteUri);
+           requestBuilder.AddHeader(HeaderNames.Cookie, cookieHeader);
+         }
+         catch (Exception ex)
+         {
+           string message = ex.Message;
+         }
+       });
+      return browser;
     }
   }
 }

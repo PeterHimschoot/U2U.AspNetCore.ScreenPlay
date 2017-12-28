@@ -46,8 +46,10 @@ namespace U2U.AspNetCore.ScreenPlay
     public DOM Contain(string query, params string[] items) {
       var elements = this.document.QuerySelectorAll(query);
       Assert.True(elements.Any(), userMessage: $"Could not find {query}");
-      var mapped = elements.Select(el => el.InnerHtml).ToList();
-      Assert.Equal(items, mapped);
+      var mapped = elements.Select(el => el.InnerHtml).ToArray();
+      for(int i = 0; i < items.Length; i += 1) {
+        Assert.True(mapped[i].Contains(items[i]), userMessage: $"Item {i} from {query} with value {mapped[i]} doesn not contain {items[i]}\n");
+      }
       return this;
     }
 
