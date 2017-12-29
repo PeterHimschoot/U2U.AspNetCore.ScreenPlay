@@ -15,7 +15,7 @@ namespace U2U.AspNetCore.ScreenPlay
     public static string ContentRoot { get; set; }
 
     public static Action<WebHostBuilderContext, IConfigurationBuilder> Configuration { get; set; }
-    
+
     static Web()
     {
       ContentRoot = Path.Combine(Directory.GetCurrentDirectory(), "../../src/WebApp");
@@ -79,6 +79,31 @@ namespace U2U.AspNetCore.ScreenPlay
         .UseStartup<S>();
         var testServer = new TestServer(webHostBuilder);
         return new Browser(testServer);
+      }
+      catch (Exception ex)
+      {
+        var msg = ex.Message;
+        return null;
+      }
+    }
+
+    public static ApiClient ApiClient<S>() where S : class
+    {
+      try
+      {
+        var webHostBuilder = new WebHostBuilder()
+        .UseContentRoot(ContentRoot)
+        .UseEnvironment(EnvironmentName.Development)
+        .ConfigureAppConfiguration((hostingContext, config) =>
+        {
+          if (Configuration != null)
+          {
+            Configuration(hostingContext, config);
+          }
+        })
+        .UseStartup<S>();
+        var testServer = new TestServer(webHostBuilder);
+        return new ApiClient(testServer);
       }
       catch (Exception ex)
       {

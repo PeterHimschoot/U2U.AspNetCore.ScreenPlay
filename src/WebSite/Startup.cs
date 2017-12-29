@@ -48,6 +48,8 @@ namespace WebSite
       Configuration.Bind("AutoConfig", autoConfigOptions);
       services.AddAutoConfig(autoConfigOptions, key => Configuration.GetConnectionString(key));
 
+      services.AddPolicies();
+
       services.AddSingleton<IAuthorizationHandler, ClaimAuthorizationHandler>();
       services.AddAuthorization(options =>
       {

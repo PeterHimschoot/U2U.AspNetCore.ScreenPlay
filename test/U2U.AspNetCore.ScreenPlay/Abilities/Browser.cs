@@ -11,42 +11,17 @@ namespace U2U.AspNetCore.ScreenPlay
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Net.Http.Headers;
 
-  public class Browser : IAbility
+  public class Browser : HttpClient // IAbility
   {
     public static Action<IServiceCollection> WithDefaults = s => { };
 
-    string IAbility.Name { get; } = "Browser";
-
-    public TestServer Server { get; }
+    override public string Name => "Browser";
 
     internal Browser(TestServer server)
-    {
-      this.Server = server ?? throw new ArgumentNullException(nameof(server));
-    }
+    : base(server) { }
     
-    private readonly List<Action<RequestBuilder, Uri>> extensions =  new List<Action<RequestBuilder, Uri>>();
-    
-    public IAbility And() => this;
-    
-    public void AddRequestExtension( Action<RequestBuilder, Uri> extension) {
-      extensions.Add(extension);
-    }
-    
-    private void RunExtensions(RequestBuilder requestBuilder, Uri absoluteUri) {
-      extensions.ForEach(extension => extension(requestBuilder, absoluteUri));
-    }
-
     public async Task ToOpenPageAsync(string uri)
-    {
-      var client = Server.CreateClient();
-      var fullUri = new Uri(this.Server.BaseAddress, uri);
-      var absoluteUri = fullUri.AbsoluteUri;
-      var requestBuilder = this.Server.CreateRequest(absoluteUri);
-      RunExtensions(requestBuilder, fullUri);
-      var response = await requestBuilder.GetAsync();
-      await SetResponse(response, fullUri);
-      // await SetResponse(await client.GetAsync(absoluteUrl), absoluteUrl);
-    }
+    => await GetAsync(uri);
 
     public async Task PostToControllerAsync(string uri, FormValues form)
     {
@@ -61,48 +36,22 @@ namespace U2U.AspNetCore.ScreenPlay
       {
         message.Content = content;
       }).PostAsync();
-      await SetResponse(response, absoluteUrl);
+      await SetResponseAsync(response, absoluteUrl);
     }
 
-
-    public HttpResponseMessage Response { get; set; }
+    // public HttpResponseMessage Response { get; set; }
 
     private DOM dom;
 
     private VerificationToken verificationToken;
 
-    public async Task SetResponse(HttpResponseMessage response, Uri absoluteUrl)
+    protected override async Task ProcessResponseAsync()
     {
-      this.Response = response;
-      UpdateCookies(response, absoluteUrl);
       var parser = new HtmlParser();
-      var content = await response.Content.ReadAsStringAsync();
+      var content = await Response.Content.ReadAsStringAsync();
       var document = await parser.ParseAsync(content);
       verificationToken = VerificationToken.From(document);
       this.dom = new DOM(document);
-    }
-
-    private CookieContainer Cookies { get; } = new CookieContainer();
-
-    private void UpdateCookies(HttpResponseMessage response, Uri absoluteUrl)
-    {
-      if (response.Headers.Contains(HeaderNames.SetCookie))
-      {
-        var cookies = response.Headers.GetValues(HeaderNames.SetCookie);
-        foreach (var cookie in cookies)
-        {
-          Cookies.SetCookies(absoluteUrl, cookie);
-        }
-      }
-    }
-
-    private void AddCookies(RequestBuilder requestBuilder, Uri absoluteUrl)
-    {
-      var cookieHeader = Cookies.GetCookieHeader(absoluteUrl);
-      if (!string.IsNullOrWhiteSpace(cookieHeader))
-      {
-        requestBuilder.AddHeader(HeaderNames.Cookie, cookieHeader);
-      }
     }
 
     public string XSRFCookieName { get; set; } = ".AspNetCore.Antiforgery.ch-d0mA9hbw";
@@ -122,8 +71,8 @@ namespace U2U.AspNetCore.ScreenPlay
 
     public Questions Should() => new Questions(this);
 
-    public RequestBuilder CreateRequest(string uri)
-    => this.Server.CreateRequest(uri);
+    // public RequestBuilder CreateRequest(string uri)
+    // => this.Server.CreateRequest(uri);
 
 
 

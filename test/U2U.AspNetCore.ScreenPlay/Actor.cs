@@ -23,6 +23,7 @@
 
     public Actor CanUse(IAbility use)
     {
+      use = use ?? throw new ArgumentNullException(nameof(use));
       if (this.Abilities.Contains(use))
       {
         throw new ArgumentException(message: $"Actor {this.Name} already has ability {use.Name}");
@@ -50,7 +51,11 @@
     public Browser UsesBrowser => this.Abilities.OfType<Browser>().Single();
 
     public Browser Browser() => UsesBrowser;
+    
+    public ApiClient ApiClient() => GetAbility<ApiClient>();
 
-    public T Ability<T>() => this.Browser().Server.Host.Services.GetService<T>();
+    public T Ability<T>() 
+    => this.GetAbility<HttpClient>().Server.Host.Services.GetService<T>();
+    
   }
 }

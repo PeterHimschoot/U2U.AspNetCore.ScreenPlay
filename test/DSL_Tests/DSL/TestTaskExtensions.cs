@@ -1,5 +1,6 @@
 namespace DSL_Tests
 {
+  using Core.Entities;
   using U2U.AspNetCore.ScreenPlay;
   using WebSite.ViewModels.ToDo;
 
@@ -11,9 +12,9 @@ namespace DSL_Tests
     public static TestTask CouldGoToItemsPage(this TestTask task)
     => task.AddAction(new Browses(Uris.Items));
     
-    public static TestTask HasToDoItems(this TestTask task, params string[] items) {
-      foreach( var item in items) {
-        task.AddAction( new AddInitialToDoItem(item));
+    public static TestTask HasToDoItems(this TestTask task, params ToDoItem[] items) {
+      foreach(var item in items) {
+        task.AddAction(new AddToDoItem(item));
       }
       return task;
     }

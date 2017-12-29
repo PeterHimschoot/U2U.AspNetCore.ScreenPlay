@@ -6,19 +6,19 @@ namespace DSL_Tests
   using Core.Interfaces;
   using U2U.AspNetCore.ScreenPlay;
 
-  public class AddInitialToDoItem : IAction
+  public class AddToDoItem : IAction
   {
-    private string title;
+    private ToDoItem item;
     
-    public AddInitialToDoItem(string title)
+    public AddToDoItem(ToDoItem item)
     {
-      this.title = title;
+      this.item = item;
     }
 
     async Task IAction.PerformAsAsync(Actor actor)
     {
       IToDoRepository repo = actor.GetAbility<IToDoRepository>();
-      repo.AddToDoItem(new ToDoItem { Title = this.title });
+      repo.AddToDoItem(item);
       await repo.CommitAsync();
     }
   }

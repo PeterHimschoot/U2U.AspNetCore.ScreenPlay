@@ -9,12 +9,10 @@ namespace U2U.AspNetCore.ScreenPlay
   using Microsoft.Net.Http.Headers;
   using U2U.AspNetCore.ScreenPlay.Identity;
 
-  public static class BrowserExtensions
+  public static class HttpClientExtensions
   {
-
-    public static Browser WithFakeClaimsPrincipal(this Browser browser, ClaimsPrincipal principal)
-    {
-      browser.AddRequestExtension((requestBuilder, absoluteUri) =>
+    public static HttpClient WithFakeClaimsPrincipal(this HttpClient client, ClaimsPrincipal principal)
+    => client.AddRequestExtension((requestBuilder, absoluteUri) =>
        {
          try
          {
@@ -32,7 +30,5 @@ namespace U2U.AspNetCore.ScreenPlay
            string message = ex.Message;
          }
        });
-      return browser;
-    }
   }
 }

@@ -113,7 +113,7 @@ namespace DSL_Tests
     //   var contents = await response.Content.ReadAsStringAsync();
     //   Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     // }
-
+    
     [Fact()]
     public async Task CreateNewItemShouldInsertIntoDatabaseToo()
     {
@@ -128,7 +128,7 @@ namespace DSL_Tests
       };
       var browser = Web.Browser<TestStartup>();
       var peter = Actor.Named("Peter").CanUse(browser)
-                       .And().CanUse<FakeToDoRepository>();
+                       .And().CanUse<IToDoRepository>();
       await Given.That(peter).CouldGoToItemsCreate().And()
                       .EnterNewToDo(model).Successfully();
       peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
@@ -155,10 +155,11 @@ namespace DSL_Tests
       var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>())
                        .And().CanUse<IToDoRepository>();
       // Act
-      await Given.That(peter).HasToDoItems("Make coffee", "Feed the cat")
+      await Given.That(peter).HasToDoItems(TestData.InitialToDos)
                  .And().CouldGoToItemsPage().Successfully();
       // Assert
-      peter.Browser().Should().HaveToDoItems("Make coffee", "Feed the cat");
+      var items = TestData.InitialToDos.Select(item => item.Title);
+      peter.Browser().Should().HaveToDoItems(items.ToArray());
     }
   }
 }
