@@ -23,60 +23,16 @@ using System.IO;
 using WebSite.ViewModels.ToDo;
 using System.Collections.Generic;
 using System.Security.Claims;
+using AutoMapper;
 
 namespace DSL_Tests
 {
 
   // https://reasoncodeexample.com/2016/08/29/how-to-keep-things-tidy-when-using-asp-net-core-testserver/
 
-  public class ToDoItemsTests
+  public class ToDoItemsTests : DSLTest
   {
-    private ITestOutputHelper logger;
-    // private TestServer server;
-    // private HttpClient client;
-    // public FakeToDoRepository Repository { get; }
-
-    public ToDoItemsTests(ITestOutputHelper logger)
-    {
-      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-      logger.WriteLine($"Current dir = {Environment.CurrentDirectory}");
-      string projectRoot = Path.Combine(Environment.CurrentDirectory, "../../../../..");
-      logger.WriteLine($"Project root = {projectRoot}");
-      Web.ContentRoot = Path.Combine(projectRoot, "src/WebSite");
-      logger.WriteLine($"Web.ContentRoot = {Web.ContentRoot}");
-
-      // Web.ContentRoot = "http://localhost:5000";
-      Web.Configuration = (hostingContext, config) =>
-      {
-        var env = hostingContext.HostingEnvironment;
-
-        config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-        if (env.IsDevelopment())
-        {
-          var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-          if (appAssembly != null)
-          {
-            config.AddUserSecrets(appAssembly, optional: true);
-          }
-        }
-        config.AddEnvironmentVariables();
-
-      };
-
-      // var builder = WebHost.CreateDefaultBuilder()
-      // .UseStartup<TestStartup>()
-      // .UseContentRoot("/Users/peterhimschoot/Documents/Code/NET_CORE/DSL_Testing/src/WebSite");
-
-      // server = new TestServer(builder);
-      //  Repository = (FakeToDoRepository)server.Host.Services.GetRequiredService(typeof(IToDoRepository));
-      // client = server.CreateClient();
-
-      // client = new HttpClient();
-      // client.BaseAddress = new Uri("http://localhost:5000/");
-    }
+    public ToDoItemsTests(ITestOutputHelper logger) : base(logger) {}
 
     // [Fact]
     // public async Task IndexShouldContainMicrosoftHeading()
@@ -117,22 +73,15 @@ namespace DSL_Tests
     [Fact()]
     public async Task CreateNewItemShouldInsertIntoDatabaseToo()
     {
-      var model = new CreateViewModel()
-      {
-        Item = new ToDoItem
-        {
-          Title = "Eat cat",
-          Description = "When really hungry",
-          DeadLine = DateTime.Now.AddDays(100)
-        }
-      };
       var browser = Web.Browser<TestStartup>();
       var peter = Actor.Named("Peter").CanUse(browser)
                        .And().CanUse<IToDoRepository>();
+      var model = TestData.AddedItem;                 
+      var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);                 
       await Given.That(peter).CouldGoToItemsCreate().And()
-                      .EnterNewToDo(model).Successfully();
+                      .EnterNewToDo(viewModel).Successfully();
       peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
-           .And().AddedToDoItem(model.Item, peter.Ability<IToDoRepository>());
+           .And().AddedToDoItem(model, peter.Ability<IToDoRepository>());
     }
 
     [Fact]

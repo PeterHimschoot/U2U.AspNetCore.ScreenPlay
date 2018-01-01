@@ -29,52 +29,19 @@ namespace DSL_Tests
 
   // https://reasoncodeexample.com/2016/08/29/how-to-keep-things-tidy-when-using-asp-net-core-testserver/
 
-  public class ClaimsTests
+  public class ClaimsTests : DSLTest
   {
-    private ITestOutputHelper logger;
-
-    public ClaimsTests(ITestOutputHelper logger)
-    {
-      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-      string projectRoot = Path.Combine(Environment.CurrentDirectory, "../../../../..");
-      Web.ContentRoot = Path.Combine(projectRoot, "src/WebSite");
-      Web.Configuration = (hostingContext, config) =>
-      {
-        var env = hostingContext.HostingEnvironment;
-
-        config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-        if (env.IsDevelopment())
-        {
-          var appAssembly = Assembly.Load(new AssemblyName(env.ApplicationName));
-          if (appAssembly != null)
-          {
-            config.AddUserSecrets(appAssembly, optional: true);
-          }
-        }
-        config.AddEnvironmentVariables();
-      };
-    }
+    public ClaimsTests(ITestOutputHelper logger) :base(logger) {}
 
     [Fact]
     public async Task ShowClaimsShouldReturnFakeClaims()
     {
-      var claimSeeds = new Dictionary<string, string> {
-        { "Claims", "list" }, { "Z", "A" }
-      };
+      var principal = TestPrincipals.FullClaimsPrincipal;
+      Assert.True(principal.Identity.IsAuthenticated);
       var claimStrings =
-        claimSeeds.Select(item => $"ClaimType = {item.Key}, Value = {item.Value}");
-
-      var fakeIdentity = new ClaimsIdentity("FakeIdentity");
-      foreach (var seed in claimSeeds)
-      {
-        fakeIdentity.AddClaim(new Claim(type: seed.Key, value: seed.Value));
-      }
-      Assert.True(fakeIdentity.IsAuthenticated);
-      var fakePrincipal = new ClaimsPrincipal(fakeIdentity);
+        principal.Claims.Select(item => $"ClaimType = {item.Type}, Value = {item.Value}");
       var browser = Web.Browser<TestStartup>()
-                       .WithFakeClaimsPrincipal(fakePrincipal);
+                       .WithFakeClaimsPrincipal(principal);
       var peter = Actor.Named("Peter").CanUse(browser);
       await Given.That(peter).CouldGoToPage(Uris.Claims).Successfully();
       peter.Browser().Should().HaveStatusCode(HttpStatusCode.OK)
@@ -82,7 +49,7 @@ namespace DSL_Tests
     }
 
     [Fact]
-    public async Task ShowClaimsShouldRedirectToLoginWithMissingClaims()
+    public async Task ShowClaimsWithMissingClaimsShouldRedirectToLogin()
     {
       var browser = Web.Browser<TestStartup>();
       var peter = Actor.Named("Peter").CanUse(browser);

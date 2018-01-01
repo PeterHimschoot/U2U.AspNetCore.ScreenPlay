@@ -1,3 +1,4 @@
+using System;
 using Core.Entities;
 
 namespace DSL_Tests
@@ -8,8 +9,14 @@ namespace DSL_Tests
       new ToDoItem { Id = 1, Title = "Make coffee" },
       new ToDoItem { Id = 2, Title = "Feed the cat" },
     };
-    
-    public static readonly ToDoItem AddedItem 
-    = new ToDoItem { Id = 1, Title = ""};
+
+    public static readonly ToDoItem AddedItem
+    = new ToDoItem
+    {
+      Id = 1,
+      Title = "Eat cat",
+      Description = "When really hungry",
+      DeadLine = DateTime.Now.AddDays(100)
+    };
   }
 }

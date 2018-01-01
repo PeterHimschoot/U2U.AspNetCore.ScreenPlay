@@ -14,8 +14,9 @@ namespace DSL_Tests {
     {
       var browser = actor.Browser();
       var formValues = new FormValues()
-      .Add(x => model.Item.Title)
-      .Add(x => model.Item.Description);
+      .Add(x => model.Title)
+      .Add(x => model.Description);
+      // .Add(x => model.DeadLine) // TODO
       await browser.PostToControllerAsync(Uris.Create, formValues);
     }
   }
