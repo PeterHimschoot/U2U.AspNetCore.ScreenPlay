@@ -37,7 +37,9 @@ namespace WebSite
       .AddCookie(); //config => config;
 
       services.AddMvc(options => { });
-      // services.AddAutoMapper();
+      
+      // Optional
+      // services.AddAntiforgery(opts => opts.Cookie.Name = "MyAntiforgeryCookie");
 
       services.AddSingleton<IMapper>(
         new Mapper(new MapperConfiguration(cfg
@@ -51,10 +53,15 @@ namespace WebSite
       services.AddPolicies();
 
       services.AddSingleton<IAuthorizationHandler, ClaimAuthorizationHandler>();
+      // https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies
       services.AddAuthorization(options =>
       {
         options.AddPolicy("CanListClaims",
           policy => policy.AddRequirements(new ClaimRequirement("Claims", "list")));
+        options.AddPolicy("CanListItems",
+          policy => policy.AddRequirements(new ClaimRequirement("Items", "list")));
+        options.AddPolicy("CanModifyItems",
+          policy => policy.AddRequirements(new ClaimRequirement("Items", "modify")));
       });
     }
 
@@ -69,7 +76,7 @@ namespace WebSite
       {
         app.UseExceptionHandler("/Error");
       }
-      
+
       app.UseAuthentication();
 
       app.UseStaticFiles();
