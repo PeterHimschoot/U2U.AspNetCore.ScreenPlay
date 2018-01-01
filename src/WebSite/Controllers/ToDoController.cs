@@ -40,14 +40,12 @@ namespace WebSite
     [HttpGet("Create")]
     public ActionResult Create()
     {
-      var item = new ToDoItem
+      var vm = new CreateViewModel
       {
         Title = "TODO",
         Description = "Don't forget to...",
-        Completed = false,
         DeadLine = DateTime.Now.AddDays(5)
       };
-      var vm = new CreateViewModel { Item = item };
       return View(vm);
     }
 
@@ -60,7 +58,8 @@ namespace WebSite
       {
         return View();
       }
-      this.repository.AddToDoItem(vm.Item);
+      var toDoItem = mapper.Map<ToDoItem>(vm);
+      this.repository.AddToDoItem(toDoItem);
       await this.repository.CommitAsync();
       return RedirectToAction(nameof(ToDoController.ToDos));
     }

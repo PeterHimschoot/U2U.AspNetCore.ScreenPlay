@@ -6,10 +6,10 @@
 
 <form asp-action="Create" asp-antiforgery="true">
   
-  <label asp-for="@Model.Item.Title"></label>
-  <input asp-for="@Model.Item.Title" type="text">
-  <label asp-for="@Model.Item.Description"></label>
-  <input asp-for="@Model.Item.Description" type="text">
+  <label asp-for="@Model.Title"></label>
+  <input asp-for="@Model.Title" type="text">
+  <label asp-for="@Model.Description"></label>
+  <input asp-for="@Model.Description" type="text">
   <input type="submit" value="Add item">
   
 </form>
