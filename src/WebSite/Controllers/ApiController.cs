@@ -32,8 +32,7 @@ namespace WebSite.Controllers
     public IQueryable<ToDoItem> GetToDos()
     => this.repository.ToDos;
 
-    [HttpGet()]
-    [Route("todo/{id:int:min(0)}", Name = nameof(Routes.CreatedAtRoute))]
+    [HttpGet("todo/{id:int:min(0)}", Name = "CreatedAtRoute")]
     [Authorize(Policy = "CanListItems")]
     public async Task<IActionResult> GetToDo(int id)
     {
@@ -47,7 +46,7 @@ namespace WebSite.Controllers
 
     [HttpPost("todo")]
     [Authorize(Policy = "CanModifyItems")]
-    public async Task<IActionResult> PostToDo(CreateViewModel viewModel)
+    public async Task<IActionResult> PostToDo([FromBody] CreateViewModel viewModel)
     {
       if (!ModelState.IsValid)
       {
@@ -56,7 +55,8 @@ namespace WebSite.Controllers
       var toDoItem = mapper.Map<ToDoItem>(viewModel);
       this.repository.AddToDoItem(toDoItem);
       await this.repository.CommitAsync();
-      return CreatedAtRoute(routeName: nameof(Routes.CreatedAtRoute), value: new { id = toDoItem.Id });
+      return CreatedAtRoute(routeName: "CreatedAtRoute", routeValues: new { id = toDoItem.Id }, value: toDoItem);
+      // return Created("http://localhost/test", null);
     }
   }
 }

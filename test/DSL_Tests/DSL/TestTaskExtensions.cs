@@ -27,9 +27,4 @@ namespace DSL_Tests
       return task.AddAction(new CreateToDoItem(model));
     }
   }
-  
-  // public static class BrowserExtensions {
-  //   public static Browser ShouldFindProperTitle(this Browser browser)
-  //   => browser.ShouldFind(Html.H1);
-  // }
 }

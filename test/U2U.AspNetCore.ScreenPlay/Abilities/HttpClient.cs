@@ -5,6 +5,7 @@ namespace U2U.AspNetCore.ScreenPlay
   using System.Collections.Generic;
   using System.Net;
   using System.Net.Http;
+  using System.Text;
   using System.Threading.Tasks;
   using Microsoft.AspNetCore.TestHost;
   using Microsoft.Net.Http.Headers;
@@ -20,6 +21,10 @@ namespace U2U.AspNetCore.ScreenPlay
       this.Server = server ?? throw new ArgumentNullException(nameof(server));
       this.AddRequestExtension(AddCookies);
     }
+    
+    public Encoding Encoding { get; set; } = Encoding.UTF8;
+    
+    public string MediaType {get;set;} = "application/json";
 
     private readonly List<Action<RequestBuilder, Uri>> extensions = new List<Action<RequestBuilder, Uri>>();
 
@@ -48,7 +53,7 @@ namespace U2U.AspNetCore.ScreenPlay
       var requestBuilder = this.Server.CreateRequest(absoluteUrl.ToString());
       RunExtensions(requestBuilder, absoluteUrl);
       var response = await requestBuilder
-        .And(message => message.Content = new StringContent(content: body))
+        .And(message => message.Content = new StringContent(content: body, encoding: Encoding, mediaType: MediaType))
         .PostAsync();
       await SetResponseAsync(response, absoluteUrl);
     }
@@ -65,7 +70,7 @@ namespace U2U.AspNetCore.ScreenPlay
       var requestBuilder = this.Server.CreateRequest(absoluteUrl.ToString());
       RunExtensions(requestBuilder, absoluteUrl);
       var response = await requestBuilder
-        .And(message => message.Content = new StringContent(content: body))
+        .And(message => message.Content = new StringContent(content: body, encoding: Encoding, mediaType: MediaType ))
         .SendAsync(method);
       await SetResponseAsync(response, absoluteUrl);
     }

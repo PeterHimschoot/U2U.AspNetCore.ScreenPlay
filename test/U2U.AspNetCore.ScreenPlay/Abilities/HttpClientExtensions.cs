@@ -12,5 +12,11 @@ namespace U2U.AspNetCore.ScreenPlay {
       
     public static HttpClient WithAcceptJsonHeader(this HttpClient client)
     => client.AddHeaderExtension(HeaderNames.Accept, "application/json");  
+    
+    public static HttpClient WithJsonContentType(this HttpClient client)
+    {
+       client.MediaType = "application/json";
+       return client;
+    }
   }
 }

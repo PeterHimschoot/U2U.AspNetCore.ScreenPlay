@@ -1,5 +1,7 @@
 namespace WebSite.Authorization
 {
+  using System.Collections.Generic;
+  using System.Linq;
   using System.Security.Claims;
   using System.Threading.Tasks;
   using Microsoft.AspNetCore.Authorization;
@@ -17,13 +19,9 @@ namespace WebSite.Authorization
     }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ClaimRequirement requirement)
     {
-      Claim c = context.User.FindFirst(requirement.Key);
-      if( c == null ) {
-        logger.LogWarning($"######### No claim {requirement.Key} could be found");
-      }
-      if (c != null && c.Value.Contains(requirement.Value))
+      IEnumerable<Claim> claims = context.User.FindAll(requirement.Key);
+      if (claims.Any(c => c.Value.Contains(requirement.Value)))
       {
-        logger.LogWarning($"######### Claim {requirement.Key} has value {c.Value}");
         context.Succeed(requirement);
       }
       return Task.CompletedTask;
