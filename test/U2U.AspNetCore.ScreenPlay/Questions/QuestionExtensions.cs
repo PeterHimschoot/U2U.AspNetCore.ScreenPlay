@@ -1,4 +1,3 @@
-
 namespace U2U.AspNetCore.ScreenPlay
 {
   using System;

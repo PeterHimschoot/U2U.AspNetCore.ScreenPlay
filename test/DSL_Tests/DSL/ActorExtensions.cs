@@ -7,7 +7,7 @@ namespace DSL_Tests
   {
     public static T Map<T>(this Actor actor, object obj)
     {
-      IMapper mapper = actor.Ability<IMapper>();
+      IMapper mapper = actor.GetService<IMapper>();
       return mapper.Map<T>(obj);
     }
   }

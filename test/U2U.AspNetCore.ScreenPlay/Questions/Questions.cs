@@ -16,17 +16,17 @@ namespace U2U.AspNetCore.ScreenPlay
 
     public Questions Add(IQuestion question)
     {
-      question.Assert(this.browser);
+      questions.Add(question);
       return this;
     }
 
-    Browser IQuestion.Assert(Browser browser)
+    IHttpClient IQuestion.Assert(IHttpClient client)
     {
       foreach (var question in questions)
       {
-        question.Assert(browser);
+        question.Assert(client);
       }
-      return this.browser;
+      return client;
     }
   }
 }

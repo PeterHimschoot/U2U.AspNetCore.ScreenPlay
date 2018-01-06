@@ -5,9 +5,8 @@ namespace DSL_Tests
   using Core.Entities;
   using Core.Interfaces;
   using U2U.AspNetCore.ScreenPlay;
-  using Xunit;
 
-  public class ShouldAddToDoItemToRepo : IQuestion
+  public class ShouldAddToDoItemToRepo : Question
   {
     private ToDoItem item;
     private IToDoRepository repository;
@@ -18,10 +17,10 @@ namespace DSL_Tests
       this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
-    Browser IQuestion.Assert(Browser browser)
+    protected override Browser Assert(Browser browser)
     {
       var items = repository.ToDos.ToList();
-      Assert.Contains(items, (i) => i.Title == item.Title);
+      Xunit.Assert.Contains(items, (i) => i.Title == item.Title);
       return browser;
     }
   }

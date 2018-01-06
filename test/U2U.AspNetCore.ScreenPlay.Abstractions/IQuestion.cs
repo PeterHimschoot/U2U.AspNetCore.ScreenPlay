@@ -5,6 +5,6 @@ namespace U2U.AspNetCore.ScreenPlay
 
   public interface IQuestion
   {
-    Browser Assert(Browser browser);
+    IHttpClient Assert(IHttpClient browser);
   }
 }

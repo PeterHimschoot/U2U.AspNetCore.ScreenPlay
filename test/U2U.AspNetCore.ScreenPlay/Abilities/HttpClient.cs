@@ -10,7 +10,7 @@ namespace U2U.AspNetCore.ScreenPlay
   using Microsoft.AspNetCore.TestHost;
   using Microsoft.Net.Http.Headers;
 
-  public abstract class HttpClient : IAbility
+  public abstract class HttpClient : IHttpClient
   {
     public virtual string Name => "HttpClient";
 

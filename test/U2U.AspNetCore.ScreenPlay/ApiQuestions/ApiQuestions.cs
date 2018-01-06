@@ -20,7 +20,7 @@ namespace U2U.AspNetCore.ScreenPlay
       return this;
     }
 
-    ApiClient IApiQuestion.Assert(ApiClient client)
+    IHttpClient IApiQuestion.Assert(IHttpClient client)
     {
       foreach (var question in questions)
       {

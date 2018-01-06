@@ -70,20 +70,6 @@ namespace DSL_Tests
     //   Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     // }
     
-    [Fact()]
-    public async Task CreateNewItemShouldInsertIntoDatabaseToo()
-    {
-      var browser = Web.Browser<TestStartup>();
-      var peter = Actor.Named("Peter").CanUse(browser)
-                       .And().CanUse<IToDoRepository>();
-      var model = TestData.AddedItem;                 
-      var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);                 
-      await Given.That(peter).CouldGoToItemsCreate().And()
-                      .EnterNewToDo(viewModel).Successfully();
-      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
-           .And().AddedToDoItem(model, peter.Ability<IToDoRepository>());
-    }
-
     [Fact]
     public async Task UserOpensDefaultPage()
     {
@@ -98,11 +84,22 @@ namespace DSL_Tests
     }
 
     [Fact()]
+    public async Task CreateNewItemShouldInsertIntoDatabaseToo()
+    {
+      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>());
+      var model = TestData.AddedItem;                 
+      var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);                 
+      await Given.That(peter).CouldGoToItemsCreate().And()
+                      .EnterNewToDo(viewModel).Successfully();
+      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
+           .And().AddedToDoItem(model, peter.GetService<IToDoRepository>());
+    }
+
+    [Fact()]
     public async Task AUserShouldSeeOnlyTheirTasks()
     {
       // Arrange
-      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>())
-                       .And().CanUse<IToDoRepository>();
+      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>());
       // Act
       await Given.That(peter).HasToDoItems(TestData.InitialToDos)
                  .And().CouldGoToItemsPage().Successfully();

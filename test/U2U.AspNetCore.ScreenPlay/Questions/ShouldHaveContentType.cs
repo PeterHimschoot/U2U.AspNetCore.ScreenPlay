@@ -1,9 +1,8 @@
 namespace U2U.AspNetCore.ScreenPlay
 {
   using System.Net.Http.Headers;
-  using Xunit;
 
-  public class ShouldHaveContentType : IQuestion
+  public class ShouldHaveContentType : Question
   {
     private MediaTypeHeaderValue contentType;
 
@@ -13,9 +12,9 @@ namespace U2U.AspNetCore.ScreenPlay
     public ShouldHaveContentType(MediaTypeHeaderValue contentType)
     => this.contentType = contentType;
 
-    Browser IQuestion.Assert(Browser browser)
+    protected override Browser Assert(Browser browser)
     {
-      Assert.Equal(contentType, browser.Response.Content.Headers.ContentType);
+      Xunit.Assert.Equal(contentType, browser.Response.Content.Headers.ContentType);
       return browser;
     }
   }

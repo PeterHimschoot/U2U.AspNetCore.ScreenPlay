@@ -6,7 +6,7 @@ namespace DSL_Tests
   using U2U.AspNetCore.ScreenPlay;
   using Xunit;
 
-  public class ShouldHaveToDoItems : IQuestion
+  public class ShouldHaveToDoItems : Question
   {
     private string[] items;
 
@@ -15,12 +15,9 @@ namespace DSL_Tests
       this.items = items ?? throw new ArgumentNullException(nameof(items));
     }
 
-    Browser IQuestion.Assert(Browser browser)
+    protected override Browser Assert(Browser browser)
     {
       browser.DOM.Should().Contain("ul#todolist>li", this.items);
-      //  .ContainSingle(Html.Ul, @class: "todolist")
-      //  .WithAChild( element => { element.WithContentsIn(this.items); });
-
       return browser;
     }
   }

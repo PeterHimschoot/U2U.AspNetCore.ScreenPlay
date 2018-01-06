@@ -1,20 +1,18 @@
-
 namespace U2U.AspNetCore.ScreenPlay
 {
   using System;
   using System.Net;
-  using Xunit;
 
-  public class ShouldHaveStatusCode : IQuestion
+  public class ShouldHaveStatusCode : Question
   {
     private HttpStatusCode code;
 
-    public ShouldHaveStatusCode(HttpStatusCode code) => this.code = code;
+    public ShouldHaveStatusCode(HttpStatusCode code) 
+    => this.code = code;
 
-
-    Browser IQuestion.Assert(Browser browser)
+    protected override Browser Assert(Browser browser)
     {
-      Assert.Equal(code, browser.Response.StatusCode);
+      Xunit.Assert.Equal(code, browser.Response.StatusCode);
       return browser;
     }
   }

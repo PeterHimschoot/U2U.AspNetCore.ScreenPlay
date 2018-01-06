@@ -5,7 +5,7 @@ namespace DSL_Tests
   using U2U.AspNetCore.ScreenPlay;
   using Xunit;
 
-  public class ShouldHaveHtmlHeader : IQuestion
+  public class ShouldHaveHtmlHeader : Question
   {
     private string header;
 
@@ -14,7 +14,7 @@ namespace DSL_Tests
       this.header = header ?? throw new ArgumentNullException(nameof(header));
     }
 
-    Browser IQuestion.Assert(Browser browser)
+    protected override Browser Assert(Browser browser)
     {
       browser.DOM.Should().Contain(Html.H1, "Microsoft");
       return browser;

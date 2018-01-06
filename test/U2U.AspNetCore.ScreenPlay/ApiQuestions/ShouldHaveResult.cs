@@ -2,9 +2,8 @@ namespace U2U.AspNetCore.ScreenPlay
 {
   using System;
   using System.Collections.Generic;
-  using Xunit;
 
-  public class ShouldHaveResult<T> : IApiQuestion
+  public class ShouldHaveResult<T> : ApiQuestion
   {
     private T expected;
     private IEqualityComparer<T> comparer;
@@ -15,7 +14,7 @@ namespace U2U.AspNetCore.ScreenPlay
       this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
     }
 
-    public ApiClient Assert(ApiClient client)
+    protected override ApiClient Assert(ApiClient client)
     {
       Type actualType = client.JSON.GetType();
       Type expectedType  = typeof(T);

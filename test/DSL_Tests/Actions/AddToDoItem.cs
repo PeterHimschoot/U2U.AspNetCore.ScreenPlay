@@ -17,7 +17,7 @@ namespace DSL_Tests
 
     async Task IAction.PerformAsAsync(Actor actor)
     {
-      IToDoRepository repo = actor.GetAbility<IToDoRepository>();
+      IToDoRepository repo = actor.GetService<IToDoRepository>();
       repo.AddToDoItem(item);
       await repo.CommitAsync();
     }

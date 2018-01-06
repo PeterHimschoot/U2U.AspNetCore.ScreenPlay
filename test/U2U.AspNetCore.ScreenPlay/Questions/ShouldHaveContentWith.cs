@@ -2,7 +2,7 @@ namespace U2U.AspNetCore.ScreenPlay {
   using System;
   using System.Collections.Generic;
 
-  public class ShouldHaveContentsWith : IQuestion {
+  public class ShouldHaveContentsWith : Question {
     
     private string path;
     private string[] items;
@@ -12,7 +12,7 @@ namespace U2U.AspNetCore.ScreenPlay {
       this.items = items ?? throw new ArgumentNullException(nameof(items));
     }
 
-    public Browser Assert(Browser browser)
+    protected override Browser Assert(Browser browser)
     {
       browser.DOM.Should().Contain(path, this.items);
       return browser;

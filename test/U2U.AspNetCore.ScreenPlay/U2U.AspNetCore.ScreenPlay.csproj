@@ -15,4 +15,8 @@
     <PackageReference Include="AngleSharp" Version="0.9.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\U2U.AspNetCore.ScreenPlay.Abstractions\U2U.AspNetCore.ScreenPlay.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
