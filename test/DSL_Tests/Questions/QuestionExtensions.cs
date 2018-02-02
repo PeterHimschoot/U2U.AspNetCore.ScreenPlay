@@ -7,8 +7,8 @@ namespace DSL_Tests
 
   public static class QuestionExtensions
   {
-    public static Questions HaveHtmlHeader(this Questions questions, string header)
-    => questions.Add(new ShouldHaveHtmlHeader(header));
+    public static Questions HaveHtmlHeader(this Questions questions, string header, params string[] classes)
+    => questions.Add(new ShouldHaveHtmlHeader(header, classes));
 
     public static Questions HaveToDoItems(this Questions questions, params string[] items)
     => questions.Add(new ShouldHaveToDoItems(items));

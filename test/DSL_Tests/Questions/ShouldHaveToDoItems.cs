@@ -17,7 +17,7 @@ namespace DSL_Tests
 
     protected override Browser Assert(Browser browser)
     {
-      browser.DOM.Should().Contain("ul#todolist>li", this.items);
+      browser.DOM.Should().Contain($"{Html.Ul}#todolist>li", this.items);
       return browser;
     }
   }

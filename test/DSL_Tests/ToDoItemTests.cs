@@ -78,7 +78,7 @@ namespace DSL_Tests
       // Act
       await Given.That(peter).CouldGoToDefaultPage().Successfully();
       // Assert
-      peter.Browser().Should().HaveHtmlHeader("Microsoft")
+      peter.Browser().Should().HaveHtmlHeader("U2U Training")
            .And().Should().HaveContentType("text/html; charset=utf-8");
       //  .And().Should().HaveHeader("Cache-Control", "no-cache, no-store");
     }

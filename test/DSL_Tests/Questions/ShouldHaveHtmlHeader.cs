@@ -8,15 +8,19 @@ namespace DSL_Tests
   public class ShouldHaveHtmlHeader : Question
   {
     private string header;
+    private string[] classes;
 
-    public ShouldHaveHtmlHeader(string header)
+    public ShouldHaveHtmlHeader(string header, params string[] classes)
     {
       this.header = header ?? throw new ArgumentNullException(nameof(header));
+      this.classes = classes;
     }
 
     protected override Browser Assert(Browser browser)
     {
-      browser.DOM.Should().Contain(Html.H1, "Microsoft");
+      string cssQuery = Html.H1;
+      this.classes?.ForEach(c => cssQuery += c);
+      browser.DOM.Should().Contain(cssQuery, this.header);
       return browser;
     }
   }
