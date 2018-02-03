@@ -1,15 +1,12 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using AngleSharp.Parser.Html;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace U2U.AspNetCore.ScreenPlay
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Net;
-  using System.Net.Http;
-  using System.Threading.Tasks;
-  using AngleSharp.Dom.Html;
-  using AngleSharp.Parser.Html;
-  using Microsoft.AspNetCore.TestHost;
-  using Microsoft.Extensions.DependencyInjection;
-  using Microsoft.Net.Http.Headers;
 
   public class Browser : HttpClient // IAbility
   {
@@ -19,7 +16,7 @@ namespace U2U.AspNetCore.ScreenPlay
 
     internal Browser(TestServer server)
     : base(server) { }
-    
+
     public async Task ToOpenPageAsync(string uri)
     => await GetAsync(uri);
 
@@ -27,9 +24,10 @@ namespace U2U.AspNetCore.ScreenPlay
     {
       var absoluteUrl = new Uri(this.Server.BaseAddress, uri);
       var requestBuilder = this.Server.CreateRequest(absoluteUrl.ToString());
-      RunExtensions(requestBuilder, absoluteUrl);
-      AddCookies(requestBuilder, absoluteUrl);
-      SetXSRFHeader(requestBuilder, absoluteUrl);
+      Extensions.RunBeforeRequest(requestBuilder, absoluteUrl);
+      // RunExtensions(requestBuilder, absoluteUrl);
+      // AddCookies(requestBuilder, absoluteUrl);
+      // SetXSRFHeader(requestBuilder, absoluteUrl);
       form.Add(VerificationToken.Name, this.verificationToken.Token);
       var content = new FormUrlEncodedContent(form.Values);
       var response = await requestBuilder.And(message =>
@@ -38,8 +36,6 @@ namespace U2U.AspNetCore.ScreenPlay
       }).PostAsync();
       await SetResponseAsync(response, absoluteUrl);
     }
-
-    // public HttpResponseMessage Response { get; set; }
 
     private DOM dom;
 
@@ -54,18 +50,18 @@ namespace U2U.AspNetCore.ScreenPlay
       this.dom = new DOM(document);
     }
 
-    public string XSRFCookieName { get; set; } = ".AspNetCore.Antiforgery.ch-d0mA9hbw";
-    public string XSRFHeaderName { get; set; } = "__RequestVerificationToken";
+    // public string XSRFCookieName { get; set; } = ".AspNetCore.Antiforgery.ch-d0mA9hbw";
+    // public string XSRFHeaderName { get; set; } = "__RequestVerificationToken";
 
-    private void SetXSRFHeader(RequestBuilder requestBuilder, Uri absoluteUrl)
-    {
-      var cookies = Cookies.GetCookies(absoluteUrl);
-      var cookie = cookies[XSRFCookieName];
-      if (cookie != null)
-      {
-        requestBuilder.AddHeader(XSRFHeaderName, cookie.Value);
-      }
-    }
+    // private void SetXSRFHeader(RequestBuilder requestBuilder, Uri absoluteUrl)
+    // {
+    //   var cookies = Cookies.GetCookies(absoluteUrl);
+    //   var cookie = cookies[XSRFCookieName];
+    //   if (cookie != null)
+    //   {
+    //     requestBuilder.AddHeader(XSRFHeaderName, cookie.Value);
+    //   }
+    // }
 
     public DOM DOM => this.dom;
 

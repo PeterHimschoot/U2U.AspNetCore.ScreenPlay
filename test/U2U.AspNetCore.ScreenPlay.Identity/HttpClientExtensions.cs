@@ -11,24 +11,26 @@ namespace U2U.AspNetCore.ScreenPlay
 
   public static class HttpClientExtensions
   {
-    public static HttpClient WithFakeClaimsPrincipal(this HttpClient client, ClaimsPrincipal principal)
-    => client.AddRequestExtension((requestBuilder, absoluteUri) =>
-       {
-         try
-         {
-           var ticket = new AuthenticationTicket(principal, "FakeClaims");
-           var ser = new ClaimsSerializer();
-           var cookieValue = ser.SerializeTicket(ticket);
-           var cookieContainer = new CookieContainer();
-           var cookie = new Cookie("FakeClaims", cookieValue, "/", absoluteUri.Authority);
-           cookieContainer.Add(cookie);
-           var cookieHeader = cookieContainer.GetCookieHeader(absoluteUri);
-           requestBuilder.AddHeader(HeaderNames.Cookie, cookieHeader);
-         }
-         catch (Exception ex)
-         {
-           string message = ex.Message;
-         }
-       });
+    public static IHttpClient WithFakeClaimsPrincipal(this IHttpClient client, ClaimsPrincipal principal)
+    => client.AddExtension(new FakeClaimsHttpClientExtension(principal));
+    
+    // => client.AddRequestExtension((requestBuilder, absoluteUri) =>
+    //    {
+    //      try
+    //      {
+    //        var ticket = new AuthenticationTicket(principal, "FakeClaims");
+    //        var ser = new ClaimsSerializer();
+    //        var cookieValue = ser.SerializeTicket(ticket);
+    //        var cookieContainer = new CookieContainer();
+    //        var cookie = new Cookie("FakeClaims", cookieValue, "/", absoluteUri.Authority);
+    //        cookieContainer.Add(cookie);
+    //        var cookieHeader = cookieContainer.GetCookieHeader(absoluteUri);
+    //        requestBuilder.AddHeader(HeaderNames.Cookie, cookieHeader);
+    //      }
+    //      catch (Exception ex)
+    //      {
+    //        string message = ex.Message;
+    //      }
+    //    });
   }
 }

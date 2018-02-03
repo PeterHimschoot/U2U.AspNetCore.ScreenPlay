@@ -32,7 +32,7 @@ namespace DSL_Tests
 
   public class ToDoItemsTests : DSLTest
   {
-    public ToDoItemsTests(ITestOutputHelper logger) : base(logger) {}
+    public ToDoItemsTests(ITestOutputHelper logger) : base(logger) { }
 
     // [Fact]
     // public async Task IndexShouldContainMicrosoftHeading()
@@ -69,7 +69,7 @@ namespace DSL_Tests
     //   var contents = await response.Content.ReadAsStringAsync();
     //   Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     // }
-    
+
     [Fact]
     public async Task UserOpensDefaultPage()
     {
@@ -87,12 +87,24 @@ namespace DSL_Tests
     public async Task CreateNewItemShouldInsertIntoDatabaseToo()
     {
       var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>());
-      var model = TestData.AddedItem;                 
-      var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);                 
+      var model = TestData.AddedItem;
+      var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);
       await Given.That(peter).CouldGoToItemsCreate().And()
                       .EnterNewToDo(viewModel).Successfully();
       peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
-           .And().AddedToDoItem(model, peter.GetService<IToDoRepository>());
+           .And().AddedToDoItem(model, peter.GetService<IToDoRepository>())
+           .And().Committed(peter.Repository());
+    }
+
+    [Fact()]
+    public async Task CreateNewItemShouldRedirectToItemsPage()
+    {
+      var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>());
+      var model = TestData.AddedItem;
+      var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);
+      await Given.That(peter).CouldGoToItemsCreate().And()
+                      .EnterNewToDo(viewModel).Successfully();
+      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect, Uris.Items);
     }
 
     [Fact()]

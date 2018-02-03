@@ -15,5 +15,8 @@ namespace DSL_Tests
  
     public static Questions AddedToDoItem(this Questions questions, ToDoItem item, IToDoRepository to)
     => questions.Add(new ShouldAddToDoItemToRepo(item, to));
+    
+    public static Questions Committed(this Questions questions, IToDoRepository repository)
+    => questions.Add(new ShouldCallCommit(repository));
   }
 }

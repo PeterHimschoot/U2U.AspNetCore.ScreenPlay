@@ -12,21 +12,23 @@ namespace U2U.AspNetCore.ScreenPlay
       this.browser = browser ?? throw new ArgumentNullException(nameof(browser));
     }
 
-    private List<IQuestion> questions = new List<IQuestion>();
+    // private List<IQuestion> questions = new List<IQuestion>();
 
     public Questions Add(IQuestion question)
     {
-      questions.Add(question);
+      // questions.Add(question);
+      question.Assert(this.browser);
       return this;
     }
 
     IHttpClient IQuestion.Assert(IHttpClient client)
-    {
-      foreach (var question in questions)
-      {
-        question.Assert(client);
-      }
-      return client;
-    }
+    => client; // This method should never be called
+    // {
+      // foreach (var question in questions)
+      // {
+      //   question.Assert(client);
+      // }
+      // return client;
+    // }
   }
 }

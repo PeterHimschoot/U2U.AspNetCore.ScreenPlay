@@ -16,9 +16,14 @@ namespace DSL_Tests
   public class OldFashionedTests
   {
 
-    public TestServer Server { get; }
+    public TestServer Server { get; set; }
 
     public OldFashionedTests()
+    {
+    }
+    
+    [Fact]
+    public async Task AUserShouldSeeOnlyTheirTasks()
     {
       var contentRoot = Path.Combine(Directory.GetCurrentDirectory(), "../../../../../src/WebSite");
       var webHostBuilder = new WebHostBuilder()
@@ -43,11 +48,7 @@ namespace DSL_Tests
       })
       .UseStartup<TestStartup>();
       Server = new TestServer(webHostBuilder);
-    }
 
-    [Fact]
-    public async Task AUserShouldSeeOnlyTheirTasks()
-    {
       IToDoRepository repo =
         Server.Host.Services.GetService(typeof(IToDoRepository)) as IToDoRepository;
 

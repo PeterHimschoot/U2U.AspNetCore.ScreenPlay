@@ -12,46 +12,53 @@ namespace U2U.AspNetCore.ScreenPlay
 
   public abstract class HttpClient : IHttpClient
   {
-    public virtual string Name => "HttpClient";
+    public abstract string Name { get; }
 
-    public TestServer Server { get; }
+    public virtual TestServer Server { get; }
 
     protected HttpClient(TestServer server)
     {
       this.Server = server ?? throw new ArgumentNullException(nameof(server));
-      this.AddRequestExtension(AddCookies);
+      this.WithCookies();
     }
-    
+
     public Encoding Encoding { get; set; } = Encoding.UTF8;
+
+    public string MediaType { get; set; } = "application/json";
     
-    public string MediaType {get;set;} = "application/json";
-
-    private readonly List<Action<RequestBuilder, Uri>> extensions = new List<Action<RequestBuilder, Uri>>();
-
-    public HttpClient AddRequestExtension(Action<RequestBuilder, Uri> extension)
-    {
-      extensions.Add(extension);
+    public HttpClient WithMediaType(string mediaType) {
+      this.MediaType = mediaType;
       return this;
     }
 
-    protected void RunExtensions(RequestBuilder requestBuilder, Uri absoluteUri)
-    => extensions.ForEach(extension => extension(requestBuilder, absoluteUri));
+    // private readonly List<Action<RequestBuilder, Uri>> extensions = new List<Action<RequestBuilder, Uri>>();
+    protected HttpClientExtensions Extensions { get; } = new HttpClientExtensions();
+
+    public virtual IHttpClient AddExtension(IHttpClientExtension extension)
+    {
+      Extensions.Add(extension);
+      return this;
+    }
+
+    // protected void RunExtensions(RequestBuilder requestBuilder, Uri absoluteUri)
+    // => extensions.ForEach(extension => extension(requestBuilder, absoluteUri));
 
     public async Task GetAsync(string uri)
     {
-      var fullUri = new Uri(this.Server.BaseAddress, uri);
-      var absoluteUri = fullUri.AbsoluteUri;
-      var requestBuilder = this.Server.CreateRequest(absoluteUri);
-      RunExtensions(requestBuilder, fullUri);
+      var absoluteUri = new Uri(this.Server.BaseAddress, uri);
+      var requestBuilder = this.Server.CreateRequest(absoluteUri.AbsoluteUri);
+      Extensions.RunBeforeRequest(requestBuilder, absoluteUri);
+      // RunExtensions(requestBuilder, absoluteUrl);
+      // RunExtensions(requestBuilder, fullUri);
       var response = await requestBuilder.GetAsync();
-      await SetResponseAsync(response, fullUri);
+      await SetResponseAsync(response, absoluteUri);
     }
 
     public async Task PostAsync(string uri, string body)
     {
       var absoluteUrl = new Uri(this.Server.BaseAddress, uri);
       var requestBuilder = this.Server.CreateRequest(absoluteUrl.ToString());
-      RunExtensions(requestBuilder, absoluteUrl);
+      Extensions.RunBeforeRequest(requestBuilder, absoluteUrl);
       var response = await requestBuilder
         .And(message => message.Content = new StringContent(content: body, encoding: Encoding, mediaType: MediaType))
         .PostAsync();
@@ -68,9 +75,9 @@ namespace U2U.AspNetCore.ScreenPlay
     {
       var absoluteUrl = new Uri(this.Server.BaseAddress, uri);
       var requestBuilder = this.Server.CreateRequest(absoluteUrl.ToString());
-      RunExtensions(requestBuilder, absoluteUrl);
+      Extensions.RunBeforeRequest(requestBuilder, absoluteUrl);
       var response = await requestBuilder
-        .And(message => message.Content = new StringContent(content: body, encoding: Encoding, mediaType: MediaType ))
+        .And(message => message.Content = new StringContent(content: body, encoding: Encoding, mediaType: MediaType))
         .SendAsync(method);
       await SetResponseAsync(response, absoluteUrl);
     }
@@ -80,34 +87,26 @@ namespace U2U.AspNetCore.ScreenPlay
     protected async Task SetResponseAsync(HttpResponseMessage response, Uri absoluteUrl)
     {
       this.Response = response;
-      UpdateCookies(response, absoluteUrl);
+      Extensions.RunAfterResponse(response, absoluteUrl);
       await ProcessResponseAsync();
     }
+
     protected abstract Task ProcessResponseAsync();
 
-    protected CookieContainer Cookies { get; } = new CookieContainer();
-
-    protected void UpdateCookies(HttpResponseMessage response, Uri absoluteUrl)
-    {
-      if (response.Headers.Contains(HeaderNames.SetCookie))
-      {
-        var cookies = response.Headers.GetValues(HeaderNames.SetCookie);
-        foreach (var cookie in cookies)
-        {
-          Cookies.SetCookies(absoluteUrl, cookie);
-        }
-      }
-    }
-
-    protected void AddCookies(RequestBuilder requestBuilder, Uri absoluteUrl)
-    {
-      var cookieHeader = Cookies.GetCookieHeader(absoluteUrl);
-      if (!string.IsNullOrWhiteSpace(cookieHeader))
-      {
-        requestBuilder.AddHeader(HeaderNames.Cookie, cookieHeader);
-      }
-    }
-
     public IAbility And() => this;
+
+    protected class HttpClientExtensions
+    {
+      private List<IHttpClientExtension> extensions = new List<IHttpClientExtension>();
+
+      public void Add(IHttpClientExtension extension)
+      => extensions.Add(extension);
+
+      public void RunBeforeRequest(RequestBuilder requestBuilder, Uri absoluteUrl)
+        => extensions.ForEach(ext => ext.BeforeRequest(requestBuilder, absoluteUrl));
+
+      public void RunAfterResponse(HttpResponseMessage response, Uri absoluteUrl)
+      => extensions.ForEach(ext => ext.AfterResponse(response, absoluteUrl));
+    }
   }
 }

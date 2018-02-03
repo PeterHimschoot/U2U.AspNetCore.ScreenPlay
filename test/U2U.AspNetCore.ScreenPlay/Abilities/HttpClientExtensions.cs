@@ -1,22 +1,20 @@
-namespace U2U.AspNetCore.ScreenPlay {
-  
-  using System;
-  using Microsoft.Net.Http.Headers;
+using System;
+using Microsoft.Net.Http.Headers;
 
-  public static class HttpClientExtensions {
-    
-    public static HttpClient AddHeaderExtension(this HttpClient client, string headerName, string headerValue)
-    => client.AddRequestExtension( (requistBuilder, absoluteUri) => {
-        requistBuilder.AddHeader(headerName, headerValue);
-      });
-      
-    public static HttpClient WithAcceptJsonHeader(this HttpClient client)
-    => client.AddHeaderExtension(HeaderNames.Accept, "application/json");  
-    
-    public static HttpClient WithJsonContentType(this HttpClient client)
-    {
-       client.MediaType = "application/json";
-       return client;
-    }
+namespace U2U.AspNetCore.ScreenPlay
+{
+  public static class HttpClientExtensions
+  {
+    public static IHttpClient WithCookies(this IHttpClient httpClient)
+    => httpClient.AddExtension(new CookiesHttpClientExtension());
+
+    public static IHttpClient WithHeader(this IHttpClient httpClient, string name, string value)
+    => httpClient.AddExtension(new HeaderHttpClientExtension(name, value));
+
+    public static IHttpClient WithAcceptHeader(this IHttpClient httpClient, string mediaType)
+    => httpClient.WithHeader(HeaderNames.Accept, mediaType);
+
+    public static IHttpClient WithAcceptJsonHeader(this IHttpClient httpClient)
+    => httpClient.WithAcceptHeader("application/json");
   }
 }

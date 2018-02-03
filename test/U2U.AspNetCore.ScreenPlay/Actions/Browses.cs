@@ -19,7 +19,7 @@ namespace U2U.AspNetCore.ScreenPlay
       if( browser != null ) {
         await browser.ToOpenPageAsync(this.Uri);
       } else {
-        throw new Exception(message: "This actor does not have a browser ability.");
+        throw new Exception(message: $"The actor {actor.Name} does not have the browser ability.");
       }
     }
   }

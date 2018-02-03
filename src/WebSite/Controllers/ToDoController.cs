@@ -27,7 +27,7 @@ namespace WebSite
     }
 
     [HttpGet("todos")]
-
+    [HttpGet("")]
     public ActionResult ToDos()
     {
       var vm = new ToDosViewModel

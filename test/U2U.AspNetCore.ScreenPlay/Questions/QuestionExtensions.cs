@@ -13,8 +13,14 @@ namespace U2U.AspNetCore.ScreenPlay
     public static Questions Should(this Questions questions)
     => questions;
 
+    public static Questions HaveStatusCode(this Questions q, HttpStatusCode code, Uri location = null)
+    => q.Add(new ShouldHaveStatusCode(code, location));
+    
+    public static Questions HaveStatusCode(this Questions q, HttpStatusCode code, string location)
+    => q.HaveStatusCode(code, new Uri(location, UriKind.Relative));
+    
     public static Questions HaveStatusCode(this Questions q, HttpStatusCode code)
-    => q.Add(new ShouldHaveStatusCode(code));
+    => q.HaveStatusCode(code, (Uri) null);
 
     public static Questions HaveContentType(this Questions q, MediaTypeHeaderValue contentType)
     => q.Add(new ShouldHaveContentType(contentType));

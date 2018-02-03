@@ -36,8 +36,11 @@ namespace DSL_Tests
 
     public Task CommitAsync()
     {
+      this.CommitCalled = true;
       return Task.CompletedTask;
     }
+    
+    public bool CommitCalled { get; set; }
 
     public void RemoveToDoItem(ToDoItem item)
     {

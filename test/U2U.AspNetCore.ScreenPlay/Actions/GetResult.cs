@@ -19,7 +19,7 @@ namespace U2U.AspNetCore.ScreenPlay
       if( apiClient != null ) {
         await apiClient.GetAsync(this.Uri);
       } else {
-        throw new Exception(message: "This actor does not have the apiClient ability.");
+        throw new Exception(message: $"The actor {actor.Name} does not have the apiClient ability.");
       }
     }
   }

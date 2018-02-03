@@ -1,11 +1,11 @@
+using System;
+using System.Linq;
+using Core.Entities;
+using Core.Interfaces;
+using U2U.AspNetCore.ScreenPlay;
+
 namespace DSL_Tests
 {
-  using System;
-  using System.Linq;
-  using Core.Entities;
-  using Core.Interfaces;
-  using U2U.AspNetCore.ScreenPlay;
-
   public class ShouldAddToDoItemToRepo : Question
   {
     private ToDoItem item;
