@@ -12,7 +12,7 @@ namespace U2U.AspNetCore.ScreenPlay
       this.client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    private List<IApiQuestion> questions = new List<IApiQuestion>();
+    // private List<IApiQuestion> questions = new List<IApiQuestion>();
 
     public ApiQuestions Add(IApiQuestion question)
     {
@@ -22,10 +22,10 @@ namespace U2U.AspNetCore.ScreenPlay
 
     IHttpClient IApiQuestion.Assert(IHttpClient client)
     {
-      foreach (var question in questions)
-      {
-        question.Assert(client);
-      }
+      // foreach (var question in questions)
+      // {
+      //   question.Assert(client);
+      // }
       return this.client;
     }
   }
