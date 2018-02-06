@@ -17,7 +17,7 @@ namespace DSL_Tests
                        .WithAcceptJsonHeader()
                        .WithFakeClaimsPrincipal(TestPrincipals.FullClaimsPrincipal);
       var peter = Actor.Named("Peter").CanUse(apiClient);
-                      //  .And().CanUse<IToDoRepository>();
+      //  .And().CanUse<IToDoRepository>();
       await Given.That(peter).HasToDoItems(TestData.InitialToDos)
                  .And().CouldGet(Uris.ApiToDos).Successfully();
       peter.ApiClient().ShouldReturn().HaveStatusCode(HttpStatusCode.OK)
@@ -31,20 +31,19 @@ namespace DSL_Tests
                   .WithAcceptJsonHeader()
                   .WithFakeClaimsPrincipal(TestPrincipals.FullClaimsPrincipal);
       var peter = Actor.Named("Peter").CanUse(apiClient);
-                      //  .And().CanUse<IToDoRepository>();
       await Given.That(peter).HasToDoItems(TestData.InitialToDos)
                  .And().CouldInsertToDoItem(TestData.AddedItem).Successfully();
-      peter.ApiClient().ShouldReturn().HaveStatusCode(HttpStatusCode.Created);
+      peter.ApiClient().ShouldReturn().HaveCreatedStatusCode();
     }
-    
-        [Fact]
+
+    [Fact]
     public async Task InsertNewItemShouldCallCommit()
     {
       var apiClient = Web.ApiClient<TestStartup>()
                   .WithAcceptJsonHeader()
                   .WithFakeClaimsPrincipal(TestPrincipals.FullClaimsPrincipal);
       var peter = Actor.Named("Peter").CanUse(apiClient);
-                      //  .And().CanUse<IToDoRepository>();
+      //  .And().CanUse<IToDoRepository>();
       await Given.That(peter).HasToDoItems(TestData.InitialToDos)
                  .And().CouldInsertToDoItem(TestData.AddedItem).Successfully();
       peter.ApiClient().ShouldReturn().CallCommit(peter.Repository());

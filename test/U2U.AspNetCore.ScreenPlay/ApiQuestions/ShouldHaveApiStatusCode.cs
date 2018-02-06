@@ -3,16 +3,12 @@ namespace U2U.AspNetCore.ScreenPlay
   using System;
   using System.Net;
 
-  public class ShouldHaveApiStatusCode : ApiQuestion
+  public class ShouldHaveApiStatusCode : BaseShouldHaveStatusCode, IApiQuestion
   {
-    private HttpStatusCode code;
+    public ShouldHaveApiStatusCode(HttpStatusCode code, Uri location = null)
+    :base(code, location) {}
 
-    public ShouldHaveApiStatusCode(HttpStatusCode code) => this.code = code;
-
-    protected override ApiClient Assert(ApiClient client)
-    {
-      Xunit.Assert.Equal(code, client.Response.StatusCode);
-      return client;
-    }
+    public virtual IHttpClient Assert(IHttpClient client)
+    => (ApiClient) base.Assert((ApiClient) client);
   }
 }

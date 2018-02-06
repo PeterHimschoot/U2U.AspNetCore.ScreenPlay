@@ -16,7 +16,8 @@ namespace U2U.AspNetCore.ScreenPlay
 
     public static ApiQuestions HaveStatusCode(this ApiQuestions questions, HttpStatusCode code)
     => questions.Add(new ShouldHaveApiStatusCode(code));
-
+    public static ApiQuestions HaveCreatedStatusCode(this ApiQuestions questions, Uri location = null)
+    => questions.Add(new ShouldHaveApiCreatedStatusCode(location));
     public static ApiQuestions HaveContentType(this ApiQuestions questions, MediaTypeHeaderValue contentType)
     => questions.Add(new ShouldHaveApiContentType(contentType));
 
