@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
   [AutoConfig]
   public static class DependencyInjection
   {
-    [AutoConfig("ToDoDb")]
+    [AutoConfig(ToDoDb.ConnectionStringName)]
     public static IServiceCollection AddToDoDb(this IServiceCollection services, string connectionString, [MigrationAssembly] string migrationAssembly)
       => services.AddDbContext<ToDoDb>(optionsBuilder =>
            optionsBuilder.UseSqlServer(connectionString,

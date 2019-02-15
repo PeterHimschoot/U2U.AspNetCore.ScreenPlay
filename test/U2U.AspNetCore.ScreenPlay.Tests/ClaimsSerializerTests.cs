@@ -28,7 +28,7 @@ namespace U2U.AspNetCore.ScreenPlay.Tests
       var test = serializer.SerializeTicket(ticket);
       
       var newTicket = serializer.DeserializeTicket(test);
-      Assert.Equal(1, newTicket.Principal.Identities.First().Claims.Count());
+      Assert.Single(newTicket.Principal.Identities.First().Claims);
     }
   }
 }

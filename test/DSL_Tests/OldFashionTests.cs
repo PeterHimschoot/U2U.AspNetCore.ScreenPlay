@@ -62,6 +62,7 @@ namespace DSL_Tests
       var document = await parser.ParseAsync(content);
       var listItems = document.QuerySelectorAll($"{Html.Ul}#todolist>li");
 
+      Assert.NotEmpty(listItems);
       var items = TestData.InitialToDos.Select(item => item.Title);
       foreach (var li in listItems)
       {

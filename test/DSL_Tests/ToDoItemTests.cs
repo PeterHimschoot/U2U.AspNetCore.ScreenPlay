@@ -34,42 +34,6 @@ namespace DSL_Tests
   {
     public ToDoItemsTests(ITestOutputHelper logger) : base(logger) { }
 
-    // [Fact]
-    // public async Task IndexShouldContainMicrosoftHeading()
-    // {
-    //   var response = await client.GetAsync("/");
-    //   Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    //   var parser = new HtmlParser();
-    //   var document = await parser.ParseAsync(await response.Content.ReadAsStreamAsync());
-    //   var companyHeader = document.QuerySelector("h1#company");
-    //   Assert.Contains("Microsoft", companyHeader.InnerHtml);
-    // }
-
-    // [Fact(Skip = "Obsolete")]
-    // public async Task CreateNewItemShouldInsertIntoDatabase()
-    // {
-    //   var createPage = await client.GetAsync("/Create");
-    //   var model = new CreateViewModel()
-    //   {
-    //     Item = new ToDoItem
-    //     {
-    //       Title = "Eat cat",
-    //       Description = "When really hungry",
-    //       DeadLine = DateTime.Now.AddDays(100)
-    //     }
-    //   };
-    //   var fb = await new FormBuilder()
-    //              .Add(x => model.Item.Title)
-    //              .Add(x => model.Item.Description)
-    //              .CopyCSRFToken(createPage)
-    //              ;
-
-    //   var content = fb.Create();
-    //   var response = await client.PostAsync("/Create", content);
-    //   var contents = await response.Content.ReadAsStringAsync();
-    //   Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    // }
-
     [Fact]
     public async Task UserOpensDefaultPage()
     {
