@@ -36,24 +36,9 @@
       }
     }
 
-    // public Actor CanUse<T>()
-    // {
-    //   IAbility ability = (IAbility)this.Ability<T>();
-    //   return CanUse(ability);
-    // }
-
     public Actor And() => this;
 
     public T GetAbility<T>() => this.Abilities.OfType<T>().SingleOrDefault();
-
-    // public bool HasBrowser
-    // => this.Abilities.OfType<Browser>().Any();
-
-    // public Browser UsesBrowser => this.Abilities.OfType<Browser>().Single();
-
-    // public Browser Browser() => UsesBrowser;
-    
-    // public ApiClient ApiClient() => GetAbility<ApiClient>();
 
     public T GetService<T>() 
     => TestServer.Host.Services.GetService<T>();

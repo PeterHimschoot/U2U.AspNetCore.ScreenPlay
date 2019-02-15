@@ -78,7 +78,7 @@ namespace DSL_Tests
       // Act
       await Given.That(peter).CouldGoToDefaultPage().Successfully();
       // Assert
-      peter.Browser().Should().HaveHtmlHeader("U2U Training")
+      peter.UsingBrowser().Should().HaveHtmlHeader("U2U Training")
            .And().Should().HaveContentType("text/html; charset=utf-8");
       //  .And().Should().HaveHeader("Cache-Control", "no-cache, no-store");
     }
@@ -91,7 +91,7 @@ namespace DSL_Tests
       var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);
       await Given.That(peter).CouldGoToItemsCreate().And()
                       .EnterNewToDo(viewModel).Successfully();
-      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect)
+      peter.UsingBrowser().Should().HaveStatusCode(HttpStatusCode.Redirect)
            .And().AddedToDoItem(model, peter.GetService<IToDoRepository>())
            .And().Committed(peter.Repository());
     }
@@ -104,7 +104,7 @@ namespace DSL_Tests
       var viewModel = peter.Map<CreateViewModel>(TestData.AddedItem);
       await Given.That(peter).CouldGoToItemsCreate().And()
                       .EnterNewToDo(viewModel).Successfully();
-      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect, Uris.Items);
+      peter.UsingBrowser().Should().HaveStatusCode(HttpStatusCode.Redirect, Uris.Items);
     }
 
     [Fact()]
@@ -113,11 +113,11 @@ namespace DSL_Tests
       // Arrange
       var peter = Actor.Named("Peter").CanUse(Web.Browser<TestStartup>());
       // Act
-      await Given.That(peter).HasToDoItems(TestData.InitialToDos)
+      await Given.That(peter).WithToDoItems(TestData.InitialToDos)
                  .And().CouldGoToItemsPage().Successfully();
       // Assert
       var items = TestData.InitialToDos.Select(item => item.Title);
-      peter.Browser().Should().HaveToDoItems(items.ToArray());
+      peter.UsingBrowser().Should().HaveToDoItems(items.ToArray());
     }
   }
 }

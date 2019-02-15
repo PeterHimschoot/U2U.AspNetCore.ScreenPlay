@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace U2U.AspNetCore.ScreenPlay
 {
 
-  public class Browser : HttpClient // IAbility
+  public class Browser : HttpClient
   {
     public static Action<IServiceCollection> WithDefaults = s => { };
 

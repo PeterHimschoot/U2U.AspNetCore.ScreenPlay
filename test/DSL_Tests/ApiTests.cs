@@ -18,9 +18,9 @@ namespace DSL_Tests
                        .WithFakeClaimsPrincipal(TestPrincipals.FullClaimsPrincipal);
       var peter = Actor.Named("Peter").CanUse(apiClient);
       //  .And().CanUse<IToDoRepository>();
-      await Given.That(peter).HasToDoItems(TestData.InitialToDos)
+      await Given.That(peter).WithToDoItems(TestData.InitialToDos)
                  .And().CouldGet(Uris.ApiToDos).Successfully();
-      peter.ApiClient().ShouldReturn().HaveStatusCode(HttpStatusCode.OK)
+      peter.UsingApiClient().ShouldReturn().HaveStatusCode(HttpStatusCode.OK)
            .And().Should().HaveToDos(TestData.InitialToDos);
     }
 
@@ -31,9 +31,9 @@ namespace DSL_Tests
                   .WithAcceptJsonHeader()
                   .WithFakeClaimsPrincipal(TestPrincipals.FullClaimsPrincipal);
       var peter = Actor.Named("Peter").CanUse(apiClient);
-      await Given.That(peter).HasToDoItems(TestData.InitialToDos)
+      await Given.That(peter).WithToDoItems(TestData.InitialToDos)
                  .And().CouldInsertToDoItem(TestData.AddedItem).Successfully();
-      peter.ApiClient().ShouldReturn().HaveCreatedStatusCode();
+      peter.UsingApiClient().ShouldReturn().HaveCreatedStatusCode();
     }
 
     [Fact]
@@ -44,9 +44,9 @@ namespace DSL_Tests
                   .WithFakeClaimsPrincipal(TestPrincipals.FullClaimsPrincipal);
       var peter = Actor.Named("Peter").CanUse(apiClient);
       //  .And().CanUse<IToDoRepository>();
-      await Given.That(peter).HasToDoItems(TestData.InitialToDos)
+      await Given.That(peter).WithToDoItems(TestData.InitialToDos)
                  .And().CouldInsertToDoItem(TestData.AddedItem).Successfully();
-      peter.ApiClient().ShouldReturn().CallCommit(peter.Repository());
+      peter.UsingApiClient().ShouldReturn().CallCommit(peter.Repository());
     }
   }
 }

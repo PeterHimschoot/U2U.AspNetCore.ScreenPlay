@@ -6,7 +6,7 @@ namespace DSL_Tests
   using Core.Interfaces;
   using U2U.AspNetCore.ScreenPlay;
 
-  public class AddToDoItem : IAction
+  public class AddToDoItem : ITask
   {
     private ToDoItem item;
     
@@ -15,7 +15,7 @@ namespace DSL_Tests
       this.item = item;
     }
 
-    async Task IAction.PerformAsAsync(Actor actor)
+    async Task ITask.PerformAsAsync(Actor actor)
     {
       IToDoRepository repo = actor.GetService<IToDoRepository>();
       repo.AddToDoItem(item);

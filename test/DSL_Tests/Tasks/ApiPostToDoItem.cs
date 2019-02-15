@@ -9,7 +9,7 @@ namespace U2U.AspNetCore.ScreenPlay
   using Newtonsoft.Json;
   using WebSite.ViewModels.ToDo;
 
-  public class ApiPostToDoItem : IAction
+  public class ApiPostToDoItem : ITask
   {
     
     private ToDoItem item;

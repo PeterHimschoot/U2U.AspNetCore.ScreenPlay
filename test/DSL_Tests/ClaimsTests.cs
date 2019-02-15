@@ -44,7 +44,7 @@ namespace DSL_Tests
                        .WithFakeClaimsPrincipal(principal);
       var peter = Actor.Named("Peter").CanUse(browser);
       await Given.That(peter).CouldGoToPage(Uris.Claims).Successfully();
-      peter.Browser().Should().HaveStatusCode(HttpStatusCode.OK)
+      peter.UsingBrowser().Should().HaveStatusCode(HttpStatusCode.OK)
         .And().Should().HaveContentsWith("tr>td", claimStrings.ToArray());
     }
 
@@ -54,7 +54,7 @@ namespace DSL_Tests
       var browser = Web.Browser<TestStartup>();
       var peter = Actor.Named("Peter").CanUse(browser);
       await Given.That(peter).CouldGoToPage(Uris.Claims).Successfully();
-      peter.Browser().Should().HaveStatusCode(HttpStatusCode.Redirect);
+      peter.UsingBrowser().Should().HaveStatusCode(HttpStatusCode.Redirect);
     }
   }
 }

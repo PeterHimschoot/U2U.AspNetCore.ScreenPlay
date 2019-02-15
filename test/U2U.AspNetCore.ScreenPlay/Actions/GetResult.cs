@@ -4,7 +4,7 @@ namespace U2U.AspNetCore.ScreenPlay
   using System;
   using System.Threading.Tasks;
 
-  public sealed class GetResult : IAction
+  public sealed class GetResult : ITask
   {
     public string Uri { get; }
 
